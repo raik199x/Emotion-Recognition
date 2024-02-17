@@ -2,6 +2,10 @@
 
 Emotion recognition on python + pytorch. Made as diploma work for Belarusian State University of Informatics and Radioelectronics.
 
+## WORK IN PROGRESS
+
+This app in under development, everything described in this project might and WILL be changed.
+
 ## Requirements
 
 ### Cuda
@@ -13,3 +17,11 @@ If your os is ubuntu, you can use [this guide](https://medium.com/@gokul.a.krish
 ### Pytorch
 
 Use the official install [guide](https://pytorch.org/get-started/locally/)
+
+## Running
+
+pass
+
+## Useful links
+
+[Pytorch under a day](https://www.youtube.com/watch?v=Z_ikDlimN6A) -- nice introduction into pytorch, for me just required 19/24 hours under 1.5 speed.
