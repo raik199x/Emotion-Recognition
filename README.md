@@ -18,6 +18,26 @@ If your os is ubuntu, you can use [this guide](https://medium.com/@gokul.a.krish
 
 Use the official install [guide](https://pytorch.org/get-started/locally/)
 
+### Dlib
+
+Requires for face detection and landmarks
+
+Since we need to use cuda, do not install Dlib if cuda is not available
+
+First visit [official dlib site](http://dlib.net/) and download dlib.
+
+~~Installation via pip: ```pip3 install dlib```~~
+
+TODO: Install with cuda
+
+### opencv
+
+```pip3 install cv2```
+
+### Dataset
+
+TODO: explain dataset folder
+
 ## Running
 
 pass

@@ -1,16 +1,43 @@
-from torch import nn
+import torch
 from pathlib import Path
-from settings import model_backup_folder
+from settings import model_backup_folder, pytorch_device
 
 
-class EmotionClassificationModel(nn.Module):
+class EmotionClassificationModel(torch.nn.Module):
   def __init__(self):
     super().__init__()
+    self.to(device=pytorch_device)  # Determine where model should run
+
+    # Pick loss function
+    self.loss_fn  # = ?
+    # Pick optimizer
+    self.optimizer  # = ?
+
     # define parameters, layers, etc
+    self.input_layer = torch.input_layer()
     pass
 
-  def train(self, data):
-    # code for one epoch
+  def TrainEpoch(self, data):
+    self.train()
+
+    # 1. Forward pass
+    # classification_result = self(data)
+
+    # 2. Calculate the loss
+    # loss_coefficient = self.loss_fn(classification_result, real_answer)
+
+    # 3. Use optimizer
+    # self.optimizer.?
+
+    # 4. Perform backpropogation
+    # loss_coefficient.backward()
+
+    # 5. Optimizer step
+    # self.optimizer.step()
+
+    pass
+
+  def TestingEpoch(self):
     pass
 
   def BackupModel():
@@ -24,6 +51,6 @@ class EmotionClassificationModel(nn.Module):
     # model.eval()
     pass
 
-  def forward(self, x):  # must be redefined for any nn module
+  def forward(self, x: torch.Tensor) -> torch.Tensors:  # must be redefined for any nn module
     # Use activate function
     pass
