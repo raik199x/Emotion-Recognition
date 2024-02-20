@@ -6,6 +6,24 @@ Emotion recognition on python + pytorch. Made as diploma work for Belarusian Sta
 
 This app in under development, everything described in this project might and WILL be changed.
 
+### TODO
+
+- [ ] Parse dataset
+  - [ ] Using program parse dataset to find all images where faces are identified.
+  - [ ] By hand seek and delete images that is failed to properly set 68 point landmarks.
+- [ ] Face detection module
+- [ ] Face landmark module
+- [ ] Emotion recognition module
+  - [ ] Steps are in progress
+- [ ] Ui module (qt)
+- [ ] Camera module (using cv2)
+- [ ] Base of pre-trained ML models module
+  - [x] Downloaded face detection and landmark detection models
+- [ ] Analysis and stats module
+- [ ] LLM module (?)
+- [ ] Web server learning module (?)
+- [ ] Dlib, set up for using cuda
+
 ## Requirements
 
 ### Cuda

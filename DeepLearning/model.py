@@ -37,8 +37,12 @@ class EmotionClassificationModel(torch.nn.Module):
 
     pass
 
-  def TestingEpoch(self):
-    pass
+  def TestingEpoch(self, data):
+    self.eval()
+    with torch.inference_mode:
+      classification_result = self(data)
+
+      # loss_coefficient = self.loss_fn(classification_result, real_answer)
 
   def BackupModel():
     MODEL_PATH = Path(model_backup_folder)

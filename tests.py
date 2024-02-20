@@ -43,13 +43,16 @@ class ImageProcessingTesting(unittest.TestCase):
 
   def test_faceDetectionV1(self):
     """
-    detector results: Image improvement level = identified faces / all faces = time (sec)
-    image resolution is 48x48, grayscale
-    1 = 806 / 956  = 45
-    2 = 893 / 956 = 174
-    3 = 883 / 956 = 796
-    4 = 883 / 956 = 3490
-    5 = ?
+    detector stats based on kaggle dataset angry faces
+    image resolution is 48x48, grayscale, cpu
+    _____________________________________________________________________
+    |Image improvement level | identified faces / all faces  | time (sec)|
+    |1                       | 806 / 956                     | 45        |
+    |2                       | 893 / 956                     | 174       |
+    |3                       | 883 / 956                     | 796       |
+    |4                       | 883 / 956                     | 3490      |
+    |5                       | ?   / 956                     | Eternity  |
+    |____________________________________________________________________|
     """
     test_files_folder = "dataset/test/angry/"
     detector = dlib.cnn_face_detection_model_v1("ImageProcessing/" + "mmod_human_face_detector.dat")
