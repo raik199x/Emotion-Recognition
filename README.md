@@ -11,8 +11,8 @@ This app in under development, everything described in this project might and WI
 - [ ] Parse dataset
   - [ ] Using program parse dataset to find all images where faces are identified.
   - [ ] By hand seek and delete images that is failed to properly set 68 point landmarks.
-- [ ] Face detection module
-- [ ] Face landmark module
+- [x] Face detection module
+- [x] Face landmark module
 - [ ] Emotion recognition module
   - [ ] Steps are in progress
 - [ ] Ui module (qt)

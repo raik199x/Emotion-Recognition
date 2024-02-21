@@ -5,3 +5,4 @@ __pycache__/
 
 dataset/
 test_result/
+git_file_ignore*
