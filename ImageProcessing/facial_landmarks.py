@@ -5,7 +5,7 @@ import cv2
 # from ImageProcessing.settings import face_landmarks_predictor
 
 
-class FaceManipulations:
+class FaceLandmarkPrediction:
   def __init__(self, face_landmarks_predictor_file_path):
     # initialize dlib's face detector (HOG-based) and then create
     # the facial landmark predictor
