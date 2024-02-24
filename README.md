@@ -17,7 +17,7 @@ if ~~crossed~~ means left undone
 - [x] Face landmark module
 - [ ] Emotion recognition module
   - [x] Write support function to get training/test data
-  - [ ] Write training loop
+  - [x] Write training loop
   - [ ] Write test loop
   - [ ] Backup/Recover model
 - [ ] Ui module (qt)

@@ -9,7 +9,7 @@ if __name__ == "__main__":
   parser = dataset_parser.DatasetParser()
   generator = parser.EmotionNpPointGenerator(parser.forLearning, parser.angry)
   values = next(generator)
-  # print(values)
+
   tensor = from_numpy(values).to(settings.pytorch_device)
   tensor = tensor.float().flatten()
 
