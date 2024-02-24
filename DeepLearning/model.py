@@ -9,10 +9,12 @@ class EmotionClassificationModel(torch.nn.Module):
     self.backup_path = GetRelativePath(data_folder + pretrained_emotion_recognition_model)
 
     # Creating layers
-    self.input_layer = torch.nn.Linear(in_features=2, out_features=128)
+    self.input_layer = torch.nn.Linear(
+      in_features=136, out_features=128
+    )  # 68 points * 2 = 136 x and y coordinates as input layer
     self.hidden_layer_1 = torch.nn.Linear(in_features=128, out_features=64)
     self.hidden_layer_2 = torch.nn.Linear(in_features=64, out_features=128)
-    self.output_layer = torch.nn.Linear(in_features=128, out_features=7)
+    self.output_layer = torch.nn.Linear(in_features=128, out_features=7)  # 7 emotions
 
     # Pick loss function
     # self.loss_fn  # = ?

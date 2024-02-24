@@ -11,8 +11,7 @@ if __name__ == "__main__":
   values = next(generator)
   # print(values)
   tensor = from_numpy(values).to(settings.pytorch_device)
-  tensor = tensor.float()
+  tensor = tensor.float().flatten()
 
   emotion_recognition_model = model.EmotionClassificationModel().to(settings.pytorch_device)
-
-  print(emotion_recognition_model(tensor[0]))
+  print(emotion_recognition_model(tensor))
