@@ -8,21 +8,26 @@ This app in under development, everything described in this project might and WI
 
 ### TODO
 
-- [ ] Parse dataset
-  - [ ] Using program parse dataset to find all images where faces are identified.
-  - [ ] By hand seek and delete images that is failed to properly set 68 point landmarks.
+if ~~crossed~~ means left undone
+
+- [x] Parse dataset
+  - [x] Using program parse dataset to find all images where faces are identified.
+  - [x] ~~By hand seek and delete images that is failed to properly set 68 point landmarks.~~ (reason: dataset is too large to fix it by hand)
 - [x] Face detection module
 - [x] Face landmark module
 - [ ] Emotion recognition module
-  - [ ] Steps are in progress
+  - [x] Write support function to get training/test data
+  - [ ] Write training loop
+  - [ ] Write test loop
+  - [ ] Backup/Recover model
 - [ ] Ui module (qt)
 - [ ] Camera module (using cv2)
-- [ ] Base of pre-trained ML models module
+- [x] Base of pre-trained ML models module
   - [x] Downloaded face detection and landmark detection models
 - [ ] Analysis and stats module
 - [ ] LLM module (?)
 - [ ] Web server learning module (?)
-- [ ] Dlib, set up for using cuda
+- [x] Dlib, set up for using cuda
 
 ## Requirements
 
@@ -40,13 +45,38 @@ Use the official install [guide](https://pytorch.org/get-started/locally/)
 
 Requires for face detection and landmarks
 
-Since we need to use cuda, do not install Dlib if cuda is not available
+Since we need to install dlib with cuda (note: installing with pip does not enabled cuda for me), visit [official dlib site](http://dlib.net/) and download dlib.
 
-First visit [official dlib site](http://dlib.net/) and download dlib.
+Enter downloaded directory and write ```sudo python3 setup.py install```
 
-~~Installation via pip: ```pip3 install dlib```~~
+While installation is starting, look at the logs and find something like that:
 
-TODO: Install with cuda
+```text
+-- Looking for cuDNN install...
+-- Found cuDNN: /usr/lib/x86_64-linux-gnu/libcudnn.so
+-- Enabling CUDA support for dlib.  DLIB WILL USE CUDA, compute capabilities: 50
+```
+
+In that case you can continue installation, otherwise check your cuda and cudann installation.
+
+After install is complete, write:
+
+```bash
+python3
+import dlib
+dlib.DLIB_USE_CUDA
+```
+
+Output must be ```True```
+
+Try to run tests, in my case i got error
+
+```text
+Could not load library libcublasLt.so.12. Error: libcublasLt.so.12: cannot open shared object file: No such file or directory
+Invalid handle. Cannot load symbol cublasLtCreate
+```
+
+If you also encounter this error, you need to install [libcublasLt.so.12](https://packages.debian.org/trixie/amd64/libcublaslt12/download).
 
 ### opencv
 

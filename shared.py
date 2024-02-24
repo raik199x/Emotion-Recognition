@@ -1,8 +1,11 @@
 from sys import argv
 from os import path
 
-pretrained_face_landmarks_predictor_model = "data/shape_predictor_68_face_landmarks.dat"
-pretrained_face_detector = "data/mmod_human_face_detector.dat"
+data_folder = "data/"
+dataset_folder = "dataset/"
+pretrained_face_landmarks_predictor_model = data_folder + "shape_predictor_68_face_landmarks.dat"
+pretrained_face_detector = data_folder + "mmod_human_face_detector.dat"
+pretrained_emotion_recognition_model = data_folder + "emotion_recognition_model.ppy"
 
 
 def GetRelativePath(var):

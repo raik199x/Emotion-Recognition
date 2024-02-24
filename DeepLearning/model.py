@@ -1,21 +1,23 @@
 import torch
 from pathlib import Path
-from settings import model_backup_folder, pytorch_device
+from shared import pretrained_emotion_recognition_model, data_folder, GetRelativePath
 
 
 class EmotionClassificationModel(torch.nn.Module):
   def __init__(self):
     super().__init__()
-    self.to(device=pytorch_device)  # Determine where model should run
+    self.backup_path = GetRelativePath(data_folder + pretrained_emotion_recognition_model)
+
+    # Creating layers
+    self.input_layer = torch.nn.Linear(in_features=2, out_features=128)
+    self.hidden_layer_1 = torch.nn.Linear(in_features=128, out_features=64)
+    self.hidden_layer_2 = torch.nn.Linear(in_features=64, out_features=128)
+    self.output_layer = torch.nn.Linear(in_features=128, out_features=7)
 
     # Pick loss function
-    self.loss_fn  # = ?
+    # self.loss_fn  # = ?
     # Pick optimizer
-    self.optimizer  # = ?
-
-    # define parameters, layers, etc
-    self.input_layer = torch.input_layer()
-    pass
+    # self.optimizer  # = ?
 
   def TrainEpoch(self, data):
     self.train()
@@ -44,8 +46,8 @@ class EmotionClassificationModel(torch.nn.Module):
 
       # loss_coefficient = self.loss_fn(classification_result, real_answer)
 
-  def BackupModel():
-    MODEL_PATH = Path(model_backup_folder)
+  def BackupModel(self):
+    MODEL_PATH = Path(self.backup_path)
     MODEL_PATH.mkdir(parents=True, exist_ok=True)
     # torch.save(model.state_dict(), PATH)
 
@@ -55,6 +57,5 @@ class EmotionClassificationModel(torch.nn.Module):
     # model.eval()
     pass
 
-  def forward(self, x: torch.Tensor) -> torch.Tensors:  # must be redefined for any nn module
-    # Use activate function
-    pass
+  def forward(self, x):  # must be redefined for any nn module
+    return self.output_layer(self.hidden_layer_2(self.hidden_layer_1(self.input_layer(x))))

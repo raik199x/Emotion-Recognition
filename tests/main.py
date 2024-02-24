@@ -13,7 +13,7 @@ from ImageProcessing.facial_landmarks import FaceLandmarkPredictor
 # import pdb # for debugging
 
 # Constants
-sample_image_path = "sample.jpg"
+sample_image_path = "sample1.jpg"
 test_result_folder_name = "test_result/"
 
 # Pre-creating classes that we going to test
@@ -25,7 +25,7 @@ face_landmark_predictor = FaceLandmarkPredictor(pflpm_test_path)
 
 # Pre-detecting face (pretrained model does not requires testing :D)
 sample_image = cv2.imread(sample_image_path)
-# sample_image = cv2.resize(sample_image, (400, 400))  # increasing image size since 48x48 is to small to see landmarks
+sample_image = cv2.resize(sample_image, (400, 400))  # increasing image size since 48x48 is to small to see landmarks
 faces = face_detector.DetectFaces(sample_image)
 faceRect = faces[0].rect
 coordinates_for_sample_image = face_detector.ConvertDlibToList(faceRect, sample_image)
