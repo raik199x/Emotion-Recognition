@@ -19,7 +19,7 @@ if ~~crossed~~ means left undone
   - [x] Write support function to get training/test data
   - [x] Write training loop
   - [ ] Write test loop
-  - [ ] Backup/Recover model
+  - [x] Backup/Recover model
 - [ ] Ui module (qt)
 - [ ] Camera module (using cv2)
 - [x] Base of pre-trained ML models module
