@@ -1,6 +1,8 @@
 from torch import __version__ as pytorch_version
 from DeepLearning import dataset_parser, model, settings
-from torch import from_numpy
+import os
+import numpy as np
+import shared
 
 if __name__ == "__main__":
   print(pytorch_version)
@@ -8,10 +10,15 @@ if __name__ == "__main__":
 
   parser = dataset_parser.DatasetParser()
   generator = parser.EmotionNpPointGenerator(parser.forLearning, parser.angry)
+  expect = np.array([1, 0, 0, 0, 0, 0, 0])
   values = next(generator)
 
-  tensor = from_numpy(values).to(settings.pytorch_device)
-  tensor = tensor.float().flatten()
-
   emotion_recognition_model = model.EmotionClassificationModel().to(settings.pytorch_device)
-  print(emotion_recognition_model(tensor))
+  if os.path.exists(shared.pretrained_emotion_recognition_model):
+    emotion_recognition_model.LoadModel(shared.pretrained_emotion_recognition_model)
+    print(emotion_recognition_model.state_dict())
+
+  emotion_recognition_model.TrainEpoch(values, expect)
+
+  emotion_recognition_model.BackupModel(shared.data_folder, "emotion_recognition_model.pt")
+  print(emotion_recognition_model.state_dict())
