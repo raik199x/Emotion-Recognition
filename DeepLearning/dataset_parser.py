@@ -13,7 +13,18 @@ class DatasetParser:
     self.neutral = "neutral"
     self.sad = "sad"
     self.surprise = "surprise"
+
     self.emotion_list = [self.angry, self.disgust, self.fear, self.happy, self.neutral, self.sad, self.surprise]
+
+    self.emotion_expected_dict = {
+      self.angry:   [1, 0, 0, 0, 0, 0, 0],
+      self.disgust: [0, 1, 0, 0, 0, 0, 0],
+      self.fear:    [0, 0, 1, 0, 0, 0, 0],
+      self.happy:   [0, 0, 0, 1, 0, 0, 0],
+      self.neutral: [0, 0, 0, 0, 1, 0, 0],
+      self.sad:     [0, 0, 0, 0, 0, 1, 0],
+      self.surprise:[0, 0, 0, 0, 0, 0, 1],
+    }  # fmt: skip
 
     self.forTesting = "test/"
     self.forLearning = "train/"

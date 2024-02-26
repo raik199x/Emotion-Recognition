@@ -10,10 +10,8 @@ if __name__ == "__main__":
   print(settings.pytorch_device)
 
   parser = dataset_parser.DatasetParser()
-  generator = parser.EmotionNpPointGenerator(parser.forLearning, parser.surprise)
-  expect = np.array([0, 0, 0, 0, 0, 0, 1])
-  values = next(generator)
-  values = next(generator)
+  generator = parser.EmotionNpPointGenerator(parser.forLearning, parser.angry)
+  expect = np.array(parser.emotion_expected_dict[parser.angry])
   values = next(generator)
 
   emotion_recognition_model = model.EmotionClassificationModel().to(settings.pytorch_device)
@@ -29,3 +27,4 @@ if __name__ == "__main__":
   tensor = torch.from_numpy(values).to(settings.pytorch_device)
   tensor = tensor.float().flatten()
   print(emotion_recognition_model(tensor))
+
