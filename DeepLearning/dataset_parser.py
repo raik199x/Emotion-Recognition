@@ -37,6 +37,3 @@ class DatasetParser:
       path_to_file = os.path.join(path_to_emotion_entrees, file)
       path_to_file = GetRelativePath(path_to_file)
       yield np.array(np.load(path_to_file))  # returning result as np array for tensor conversion
-
-  def InfiniteLearningLoop(self):
-    pass

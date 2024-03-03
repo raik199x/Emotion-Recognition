@@ -14,7 +14,7 @@ if ~~crossed~~ means left undone
   - [x] Using program parse dataset to find all images where faces are identified.
   - [x] ~~By hand seek and delete images that is failed to properly set 68 point landmarks.~~ (reason: dataset is too large to fix it by hand)
 - [x] Face detection module
-- [x] Face landmark module
+- [x] ~~Face landmark module~~ (reason: This approach is bad, so back to analyzing 48x48 images)
 - [ ] Emotion recognition module
   - [x] Write support function to get training/test data
   - [x] Write training loop
@@ -23,7 +23,10 @@ if ~~crossed~~ means left undone
   - [ ] Grub some statistics
 - [ ] Analysis and stats module
 - [ ] Ui module (qt)
-  - [ ] Multithreading learning
+  - [x] Implement multithreading on pressing start learning
+  - [x] Implement learning algorithm
+  - [ ] Plot graphics of loss function
+  - [ ] Plot graphics of accuracy
   - [ ] Camera capture
   - [ ] Create chat tab
   - [ ] Real time camera
@@ -98,3 +101,5 @@ pass
 ## Useful links
 
 [Pytorch under a day](https://www.youtube.com/watch?v=Z_ikDlimN6A) -- nice introduction into pytorch, for me just required 19/24 hours under 1.5 speed.
+
+[Dmitriy Pertsev](https://www.bsuir.by/ru/kaf-evm/pertsau) -- My coach and reviewer

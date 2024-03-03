@@ -1,4 +1,5 @@
 from PySide6.QtWidgets import QFileDialog, QMessageBox, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QTextBrowser
+from PySide6.QtCore import QThreadPool
 from ui.gui.tabs.abstract_tab import AbstractTabWidget
 from torch import __version__ as pytorch_version
 from DeepLearning.settings import pytorch_device
@@ -13,6 +14,7 @@ class SettingsTab(AbstractTabWidget):
   def __init__(self, ParentClass, tab_name):
     super().__init__(ParentClass, tab_name)
     self.main_vertical_layout = QVBoxLayout(self)
+    self.threadpool = QThreadPool()  # Just for stats
 
     self.label_model_load_status = QLabel()
 
@@ -36,11 +38,22 @@ class SettingsTab(AbstractTabWidget):
     # outputting info
     self.textBrowser_current_run_info = QTextBrowser()
     self.textBrowser_current_run_info.setText(
-      "Pytorch version: " + pytorch_version + "\n" + "Model is running on: " + pytorch_device
+      "Pytorch version:\t"
+      + pytorch_version
+      + "\n"
+      + "Model is running on:\t"
+      + pytorch_device
+      + "\n"
+      + "Maximum threads:\t"
+      + str(self.threadpool.maxThreadCount())
     )
     self.main_vertical_layout.addWidget(self.textBrowser_current_run_info)
 
   def OnLoadModelButtonClicked(self) -> None:
+    if self.ParentClass.is_model_learning:
+      QMessageBox.warning(self, "Model is busy learning now")
+      return
+
     file_dialog = QFileDialog()
     file_path, _ = file_dialog.getOpenFileName(self, "Select pretrained model file")
 
