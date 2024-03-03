@@ -1,8 +1,7 @@
 import torch
 import os
-import numpy as np
 from pathlib import Path
-from DeepLearning.settings import learning_rate, pytorch_device
+from DeepLearning.settings import learning_rate
 
 
 class EmotionClassificationModel(torch.nn.Module):
@@ -47,12 +46,12 @@ class EmotionClassificationModel(torch.nn.Module):
     print(self.accuracy(expected_tensor, classification_result))
     print(self.loss_fn(classification_result, expected_tensor).item())
 
-  def BackupModel(self, folder_path: str, file_name: str):
+  def BackupModel(self, folder_path: str, file_name: str) -> None:
     MODEL_PATH = Path(folder_path)
     MODEL_PATH.mkdir(parents=True, exist_ok=True)
     torch.save(self.state_dict(), os.path.join(folder_path, file_name))
 
-  def LoadModel(self, path_to_model: str):
+  def LoadModel(self, path_to_model: str) -> None:
     self.load_state_dict(torch.load(path_to_model))
     self.eval()
 

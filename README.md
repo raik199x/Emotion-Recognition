@@ -18,14 +18,19 @@ if ~~crossed~~ means left undone
 - [ ] Emotion recognition module
   - [x] Write support function to get training/test data
   - [x] Write training loop
-  - [ ] Write test loop
+  - [x] Write test loop
   - [x] Backup/Recover model
+  - [ ] Grub some statistics
+- [ ] Analysis and stats module
 - [ ] Ui module (qt)
+  - [ ] Multithreading learning
+  - [ ] Camera capture
+  - [ ] Create chat tab
+  - [ ] Real time camera
+- [ ] Poe.api (chatting with bots)
 - [ ] Camera module (using cv2)
 - [x] Base of pre-trained ML models module
   - [x] Downloaded face detection and landmark detection models
-- [ ] Analysis and stats module
-- [ ] LLM module (?)
 - [ ] Web server learning module (?)
 - [x] Dlib, set up for using cuda
 
