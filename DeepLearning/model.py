@@ -9,10 +9,10 @@ class EmotionClassificationModel(torch.nn.Module):
     super().__init__()
 
     # Creating layers
-    self.input_layer = torch.nn.Linear(in_features=48 * 48, out_features=128)
-    self.hidden_layer_1 = torch.nn.Linear(in_features=128, out_features=64)
-    self.hidden_layer_2 = torch.nn.Linear(in_features=64, out_features=128)
-    self.output_layer = torch.nn.Linear(in_features=128, out_features=7)  # 7 emotions
+    self.input_layer = torch.nn.Linear(in_features=48 * 48, out_features=512)
+    self.hidden_layer_1 = torch.nn.Linear(in_features=512, out_features=128)
+    self.hidden_layer_2 = torch.nn.Linear(in_features=128, out_features=64)
+    self.output_layer = torch.nn.Linear(in_features=64, out_features=7)  # 7 emotions
 
     self.act = torch.nn.ReLU()
     self.loss_fn = torch.nn.CrossEntropyLoss()  # Multi class classification, includes nn.LogSoftmax and nn.NLLLoss
@@ -27,7 +27,7 @@ class EmotionClassificationModel(torch.nn.Module):
     # 2. Calculate the loss
     loss_coefficient = self.loss_fn(classification_result, expected_tensor)
 
-    # 3. Use optimizer
+    # 3. Zero gradients of the optimizer
     self.optimizer.zero_grad()
 
     # 4. Perform backpropogation
@@ -36,15 +36,16 @@ class EmotionClassificationModel(torch.nn.Module):
     # 5. Optimizer step
     self.optimizer.step()
 
-  def TestingEpoch(self, tensor: torch.tensor, expected_tensor: torch.tensor):
+  def TestingEpoch(self, tensor: torch.tensor, expected_tensor: torch.tensor) -> dict[str:int, str:int]:
     self.eval()
     with torch.inference_mode():
       classification_result = self(tensor)
-
-    print(expected_tensor)
-    print(classification_result)
-    print(self.accuracy(expected_tensor, classification_result))
-    print(self.loss_fn(classification_result, expected_tensor).item())
+      return {
+        "Accuracy": self.accuracy(expected_tensor, classification_result),
+        "Loss": self.loss_fn(classification_result, expected_tensor).item(),
+        "Prediction": classification_result,
+        "IsPredictedRight": torch.all(torch.eq(torch.round(classification_result), expected_tensor)),
+      }
 
   def BackupModel(self, folder_path: str, file_name: str) -> None:
     MODEL_PATH = Path(folder_path)
@@ -54,6 +55,9 @@ class EmotionClassificationModel(torch.nn.Module):
   def LoadModel(self, path_to_model: str) -> None:
     self.load_state_dict(torch.load(path_to_model))
     self.eval()
+    self.optimizer = torch.optim.Adam(
+      self.parameters(), lr=learning_rate
+    )  # ? If :attr:assign is True the optimizer must be created after the call to :attr:load_state_dict.
 
   def accuracy(self, expected_result: torch.Tensor, model_result: torch.Tensor) -> int:
     correct = torch.eq(expected_result, model_result).sum().item()
@@ -61,7 +65,7 @@ class EmotionClassificationModel(torch.nn.Module):
     return acc
 
   def forward(self, x: torch.Tensor):  # must be redefined for any nn module
-    X = self.act(self.input_layer(x))
-    X = self.act(self.hidden_layer_1(X))
-    X = self.act(self.hidden_layer_2(X))
-    return self.output_layer(X)
+    x = self.act(self.input_layer(x))
+    x = self.act(self.hidden_layer_1(x))
+    x = self.act(self.hidden_layer_2(x))
+    return self.output_layer(x)

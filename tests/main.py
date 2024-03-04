@@ -6,7 +6,16 @@ sys.path.append("..")
 import cv2
 import os
 import shutil
-from shared import GetRelativePath, pretrained_face_detector, pretrained_face_landmarks_predictor_model
+import torch
+import numpy as np
+from DeepLearning.model import EmotionClassificationModel
+from DeepLearning.dataset_parser import DatasetParser
+from shared import (
+  GetRelativePath,
+  pretrained_face_detector,
+  pretrained_face_landmarks_predictor_model,
+  pretrained_emotion_recognition_model,
+)
 from ImageProcessing.face_detection import FaceDetector
 from ImageProcessing.facial_landmarks import FaceLandmarkPredictor
 
@@ -68,6 +77,30 @@ class ImageProcessingTesting(unittest.TestCase):
     result_image = face_detector.DrawFaceBox(image, coordinates_for_sample_image)
     result_image = face_landmark_predictor.DrawLandmarks(result_image, coordinates_landmarks)
     cv2.imwrite(test_result_folder_name + "DrawingBoxLandmark.jpg", result_image)
+
+
+class ModelTesting(unittest.TestCase):
+  def test_TriggeringTestingEpoch(self):
+    # Loading module
+    emotion_classification_model = EmotionClassificationModel()
+    emotion_classification_model.LoadModel("../" + pretrained_emotion_recognition_model)
+
+    # Getting value for testing
+    parser = DatasetParser()
+    emotion = parser.disgust
+    generator = parser.EmotionNpPointGenerator(parser.forTesting, emotion)
+    value = next(generator)
+    tensor = torch.from_numpy(value).to(torch.float32)
+    expected_tensor = torch.from_numpy(np.array(parser.emotion_expected_dict[emotion])).to(torch.float32)
+    # Getting testing result
+    fun_result = emotion_classification_model.TestingEpoch(tensor, expected_tensor)
+    print(fun_result)
+
+  def test_OutputStateDict(self):
+    # Loading module
+    emotion_classification_model = EmotionClassificationModel()
+    emotion_classification_model.LoadModel("../" + pretrained_emotion_recognition_model)
+    print(emotion_classification_model.state_dict())
 
 
 if __name__ == "__main__":
