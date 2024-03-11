@@ -83,15 +83,19 @@ class ModelTesting(unittest.TestCase):
   def test_TriggeringTestingEpoch(self):
     # Loading module
     emotion_classification_model = EmotionClassificationModel()
-    emotion_classification_model.LoadModel("../" + pretrained_emotion_recognition_model)
+    if os.path.exists("../" + pretrained_emotion_recognition_model):  # if exists better using our model
+      emotion_classification_model.LoadModel("../" + pretrained_emotion_recognition_model)
 
     # Getting value for testing
-    parser = DatasetParser()
-    emotion = parser.disgust
-    generator = parser.EmotionNpPointGenerator(parser.forTesting, emotion)
-    value = next(generator)
-    tensor = torch.from_numpy(value).to(torch.float32)
+    parser = DatasetParser("dataset")
+    self.assertEqual(parser.LoadDatasetIntoRam(), 0)
+
+    emotion = parser.angry
+    test_value = parser.learning_set_dict[emotion][0]  # taking first image
+    tensor = torch.from_numpy(test_value).to(torch.float32)
+
     expected_tensor = torch.from_numpy(np.array(parser.emotion_expected_dict[emotion])).to(torch.float32)
+
     # Getting testing result
     fun_result = emotion_classification_model.TestingEpoch(tensor, expected_tensor)
     print(fun_result)
@@ -99,6 +103,8 @@ class ModelTesting(unittest.TestCase):
   def test_OutputStateDict(self):
     # Loading module
     emotion_classification_model = EmotionClassificationModel()
+    if not os.path.exists("../" + pretrained_emotion_recognition_model):
+      return
     emotion_classification_model.LoadModel("../" + pretrained_emotion_recognition_model)
     print(emotion_classification_model.state_dict())
 

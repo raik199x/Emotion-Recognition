@@ -3,6 +3,7 @@ from PySide6.QtCore import QThreadPool, Slot, Qt
 from ui.gui.tabs.abstract_tab import AbstractTabWidget
 from ui.gui.workers.learning_worker import LearningWorker
 from DeepLearning.dataset_parser import DatasetParser
+from shared import dataset_folder
 
 import pyqtgraph as pg
 
@@ -41,7 +42,9 @@ class LearningTab(AbstractTabWidget):
     self.main_vertical_layout.addLayout(buttons_start_stop_layout)
 
     # Statistics
-    self.parser = DatasetParser()  # For some statistics
+    self.parser = DatasetParser(dataset_folder)
+    if not self.parser.LoadDatasetIntoRam() == 0:
+      print("UNHANDLED ERROR")  # TODO
     layout_statistics = QHBoxLayout()
 
     basic_stats_layout = QFormLayout()
@@ -54,9 +57,7 @@ class LearningTab(AbstractTabWidget):
     classification_stats_layout = QFormLayout()
     self.classification_results_listOfLabels = list()
     for num, emotion in enumerate(self.parser.emotion_list):
-      self.classification_results_listOfLabels.append(
-        QLabel("0/" + str(self.parser.testing_folder_file_count_list[num]))
-      )
+      self.classification_results_listOfLabels.append(QLabel("0/0"))
       classification_stats_layout.addRow(QLabel(emotion + ": "), self.classification_results_listOfLabels[num])
     layout_statistics.addLayout(classification_stats_layout)
 
@@ -64,7 +65,7 @@ class LearningTab(AbstractTabWidget):
 
     # Plots
     plot_styles = {"color": "red", "font-size": "20px"}
-    self.plot_pen = pg.mkPen(color="red", width=4)
+    self.plot_pen = pg.mkPen(color="red", width=3)
 
     self.accuracy_plot = pg.PlotWidget()
     self.accuracy_plot.setTitle("Accuracy rate", color="b", size="20pt")
@@ -94,7 +95,7 @@ class LearningTab(AbstractTabWidget):
     self.full_dataset_iteration = 0
 
     # Setting up worker
-    worker = LearningWorker(self.ParentClass, self.update_after_num_epochs)
+    worker = LearningWorker(self.ParentClass, self.update_after_num_epochs, self.parser)
     worker.signals.redo_plots_signal.connect(self.UpdatePlots)
     worker.signals.update_epoch_stats_signal.connect(self.UpdateEpochStat)
     worker.signals.update_emotion_classification_result_signal.connect(self.UpdateClassificationResults)
@@ -136,7 +137,7 @@ class LearningTab(AbstractTabWidget):
 
   @Slot()
   def UpdateClassificationResults(self, classification_result: list):
-    for num, emotion in enumerate(classification_result):
+    for num, emotion in enumerate(self.parser.emotion_list):
       self.classification_results_listOfLabels[num].setText(
-        str(classification_result[num]) + "/" + str(self.parser.testing_folder_file_count_list[num])
+        str(classification_result[num]) + "/" + str(len(self.parser.testing_set_dict[emotion]))
       )
