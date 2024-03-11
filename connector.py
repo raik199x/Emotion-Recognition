@@ -9,14 +9,14 @@ class Connector:
   def __init__(self):
     self.Parser = DatasetParser("stub")  # Empty parser
 
-  def is_grayscale(self, image: np.array):
+  def IsGrayscale(self, image: np.array) -> bool:
     # Check the number of channels in the image
     return image.ndim == 2 or (image.ndim == 3 and image.shape[2] == 1)
 
   def ImageIntoTensor(self, original_image: np.array) -> torch.tensor:
     # Checking if image is already gray
     image = original_image.copy()
-    if not self.is_grayscale(image):
+    if not self.IsGrayscale(image):
       image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # Now checking if image is suitable size
@@ -33,4 +33,4 @@ class Connector:
       expect = self.Parser.emotion_expected_dict[emotion]
       if expect.index(max(expect)) == result_index:
         return emotion
-    return "UNKNOWN"
+    raise IndexError("Tensor list is bigger than expected list, so could not find emotion")

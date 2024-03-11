@@ -1,5 +1,6 @@
 import cv2
 import connector
+import numpy as np
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtWidgets import QLabel, QVBoxLayout, QCheckBox
@@ -14,22 +15,22 @@ class CameraTab(AbstractTabWidget):
 
     self.connector = connector.Connector()
     self.FaceDetector = FaceDetector(pretrained_face_detector, 0)
+    self.capture = cv2.VideoCapture()
 
     # Create the layout and add the image label to it
     main_layout = QVBoxLayout()
     self.setLayout(main_layout)
 
     self.checkbox_display_faceBox = QCheckBox("Display face box")
-    self.checkbox_display_faceBox.setEnabled(True)
     main_layout.addWidget(self.checkbox_display_faceBox)
 
     self.checkbox_display_emotion = QCheckBox("Display Emotion")
-    self.checkbox_display_emotion.setEnabled(True)
     main_layout.addWidget(self.checkbox_display_emotion)
 
     # Create the QLabel to display the video feed
     self.image_label = QLabel(self)
     self.image_label.setAlignment(Qt.AlignCenter)
+    self.image_label.setStyleSheet("QLabel { border: 6px solid black; }")
     main_layout.addWidget(self.image_label)
 
     # Create the timer for updating the video feed
@@ -37,10 +38,7 @@ class CameraTab(AbstractTabWidget):
     self.timer.timeout.connect(self.update_frame)
     self.timer.start(30)  # Update the frame every 30 milliseconds
 
-    # Open the camera using OpenCV
-    self.capture = cv2.VideoCapture(0)  # 0 represents the default camera
-
-  def update_frame(self):
+  def update_frame(self) -> np.array:
     # Read the frame from the camera
     ret, frame = self.capture.read()
     if not ret:
@@ -79,3 +77,8 @@ class CameraTab(AbstractTabWidget):
 
     # Set the pixmap on the label to display the video feed
     self.image_label.setPixmap(pixmap)
+    return frame
+
+  def UserSelectedTab(self):
+    # Open the camera using OpenCV
+    self.capture = cv2.VideoCapture(0)  # 0 represents the default camera

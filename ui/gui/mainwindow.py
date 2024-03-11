@@ -32,6 +32,11 @@ class MainWindow(QMainWindow):
       self.mainTabWidget.addTab(tab, tab.tab_name)
 
   def TabChanged(self, index):
+    # TODO: remove hardcode
+    if self.list_of_tabs[index].tab_name != "Camera":
+      if self.list_of_tabs[2].capture.isOpened():
+        self.list_of_tabs[2].capture.release()
+
     self.list_of_tabs[index].UserSelectedTab()
 
 
