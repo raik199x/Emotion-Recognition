@@ -61,7 +61,7 @@ class EmotionClassificationModel(torch.nn.Module):
     self.eval()
     with torch.inference_mode():
       classification_result = self(tensor)[0]
-      # converted_result = (classification_result > 0.5).float()
+
       return {
         "Accuracy": self.accuracy(expected_tensor, classification_result),
         "Loss": self.loss_fn(classification_result, expected_tensor).item(),

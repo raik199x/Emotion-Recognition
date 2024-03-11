@@ -65,24 +65,33 @@ class LearningTab(AbstractTabWidget):
 
     # Plots
     plot_styles = {"color": "red", "font-size": "20px"}
-    self.plot_pen = pg.mkPen(color="red", width=3)
+    self.loss_coef_pen = pg.mkPen(color="red", width=3)
+    self.accuracy_coef_pen = pg.mkPen(color="blue", width=3)
 
-    self.accuracy_plot = pg.PlotWidget()
-    self.accuracy_plot.setTitle("Accuracy rate", color="b", size="20pt")
-    self.accuracy_plot.setLabel("left", "Accuracy", **plot_styles)
-    self.accuracy_plot.setLabel("bottom", "Epoch", **plot_styles)
-    self.accuracy_plot.showGrid(x=True, y=True)
+    self.statistics_plot = pg.PlotWidget()
+    self.statistics_plot.setTitle("Testing stats", color="b", size="20pt")
+    self.statistics_plot.setLabel("left", "Coefficient", **plot_styles)
+    self.statistics_plot.setLabel("bottom", "Epoch", **plot_styles)
+    self.statistics_plot.showGrid(x=True, y=True)
+    self.statistics_plot.addLegend()
 
-    self.loss_fn_plot = pg.PlotWidget()
-    self.loss_fn_plot.setTitle("Loss function rate", color="b", size="20pt")
-    self.loss_fn_plot.setLabel("left", "Loss", **plot_styles)
-    self.loss_fn_plot.setLabel("bottom", "Epoch", **plot_styles)
-    self.loss_fn_plot.showGrid(x=True, y=True)
+    # self.accuracy_plot = pg.PlotWidget()
+    # self.accuracy_plot.setTitle("Testing stats", color="b", size="20pt")
+    # self.accuracy_plot.setLabel("left", "Coefficient", **plot_styles)
+    # self.accuracy_plot.setLabel("bottom", "Epoch", **plot_styles)
+    # self.accuracy_plot.showGrid(x=True, y=True)
 
-    layout_plots = QHBoxLayout()
-    layout_plots.addWidget(self.accuracy_plot)
-    layout_plots.addWidget(self.loss_fn_plot)
-    self.main_vertical_layout.addLayout(layout_plots)
+    # self.loss_fn_plot = pg.PlotWidget()
+    # self.loss_fn_plot.setTitle("Loss function rate", color="b", size="20pt")
+    # self.loss_fn_plot.setLabel("left", "Loss", **plot_styles)
+    # self.loss_fn_plot.setLabel("bottom", "Epoch", **plot_styles)
+    # self.loss_fn_plot.showGrid(x=True, y=True)
+
+    # layout_plots = QHBoxLayout()
+    # layout_plots.addWidget(self.accuracy_plot)
+    # layout_plots.addWidget(self.loss_fn_plot)
+    # self.main_vertical_layout.addLayout(layout_plots)
+    self.main_vertical_layout.addWidget(self.statistics_plot)
 
   def UserPressedStartButton(self) -> None:
     self.button_start_model_train.setEnabled(False)
@@ -123,11 +132,13 @@ class LearningTab(AbstractTabWidget):
 
   @Slot()
   def UpdatePlots(self, loss_results: list[float, ...], accuracy_results: list[float, ...]) -> None:
-    self.loss_fn_plot.clear()
-    self.accuracy_plot.clear()
+    # self.loss_fn_plot.clear()
+    self.statistics_plot.clear()
 
-    self.accuracy_plot.plot(range(0, len(accuracy_results)), accuracy_results, pen=self.plot_pen)
-    self.loss_fn_plot.plot(range(0, len(loss_results)), loss_results, pen=self.plot_pen)
+    self.statistics_plot.plot(
+      range(0, len(accuracy_results)), accuracy_results, name="Accuracy", pen=self.accuracy_coef_pen
+    )
+    self.statistics_plot.plot(range(0, len(loss_results)), loss_results, name="Loss", pen=self.loss_coef_pen)
 
   @Slot()
   def UpdateEpochStat(self, current_epoch: int, current_emotion: str, full_dataset_iteration: int):
