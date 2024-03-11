@@ -5,12 +5,14 @@ from PySide6.QtWidgets import QLabel, QVBoxLayout
 from ui.gui.tabs.abstract_tab import AbstractTabWidget
 from ImageProcessing.face_detection import FaceDetector
 from shared import pretrained_face_detector
+import connector
 
 
 class CameraTab(AbstractTabWidget):
   def __init__(self, ParentClass, tab_name):
     super().__init__(ParentClass, tab_name)
 
+    self.connector = connector.Connector()
     self.FaceDetector = FaceDetector(pretrained_face_detector, 0)
     # Create the QLabel to display the video feed
     self.image_label = QLabel(self)
@@ -40,14 +42,20 @@ class CameraTab(AbstractTabWidget):
     #! ADDING CHECKBOX FOR THIS
     dlib_faces = self.FaceDetector.DetectFaces(frame)
     cropped_images = list()
+    coordinates = list()
     for dlib_face in dlib_faces:
       dlib_face = dlib_face.rect
-      coordinates = self.FaceDetector.ConvertDlibToList(dlib_face, frame)
-      cropped_images.append(self.FaceDetector.CropFaceBox(frame, coordinates))
-      frame = self.FaceDetector.DrawFaceBox(frame, coordinates)
+      coordinates.append(self.FaceDetector.ConvertDlibToList(dlib_face, frame))
+      cropped_images.append(self.FaceDetector.CropFaceBox(frame, coordinates[-1]))
+      frame = self.FaceDetector.DrawFaceBox(frame, coordinates[-1])
 
     #! AND FOR THIS
-    # for face in cropped_images:
+    for num, face in enumerate(cropped_images):
+      tensor = self.connector.ImageIntoTensor(face)
+      class_result = self.ParentClass.emotion_classification_model(tensor)
+      emotion_name = self.connector.ClassificationResultIntoEmotion(class_result)
+      # cv2.putText(image_with_text, text, position, font, font_scale, color, thickness)
+      cv2.putText(frame, emotion_name, coordinates[num][0], cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2)
 
     # Convert the frame to RGB format
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
