@@ -23,17 +23,19 @@ if ~~crossed~~ means left undone
   - [x] Write test loop
   - [x] Backup/Recover model
   - [ ] Grub some statistics
+  - [ ] Model actually does not recognize emotion =(
 - [ ] Analysis and stats module
 - [ ] Ui module (qt)
   - [x] Implement multithreading on pressing start learning
   - [x] Implement learning algorithm
-  - [ ] Plot graphics of loss function
-  - [ ] Plot graphics of accuracy
-  - [ ] Camera capture
+  - [x] Plot graphics of loss function
+  - [x] Plot graphics of accuracy
+  - [x] Camera capture
   - [ ] Create chat tab
-  - [ ] Real time camera
+  - [x] Real time camera
 - [ ] Poe.api (chatting with bots)
-- [ ] Camera module (using cv2)
+- [x] ~~Camera module (using cv2)~~
+(reason: currently camera function are not shared between modules, so they are written directly in gui module)
 - [x] Base of pre-trained ML models module
   - [x] Downloaded face detection and landmark detection models
 - [ ] Web server learning module (?)
