@@ -1,5 +1,7 @@
 # Emotion-Recognition
 
+![Codacy Badge](https://api.codacy.com/project/badge/Grade/fa07a39a4cfe41d3a4c04a3d7e1dbde8)
+
 Emotion recognition on python + pytorch. Made as diploma work for Belarusian State University of Informatics and Radioelectronics.
 
 ## WORK IN PROGRESS
