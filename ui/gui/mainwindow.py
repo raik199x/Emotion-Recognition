@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget
 from ui.gui.tabs.learning_tab import LearningTab
 from ui.gui.tabs.settings_tab import SettingsTab
+from ui.gui.tabs.camera_tab import CameraTab
 from DeepLearning.model import EmotionClassificationModel
 from DeepLearning.settings import pytorch_device
 
@@ -26,7 +27,7 @@ class MainWindow(QMainWindow):
     self.is_model_learning = False  # Forbids changing model settings
 
     # Tabs
-    self.list_of_tabs = [SettingsTab(self, "Settings"), LearningTab(self, "Learning")]
+    self.list_of_tabs = [SettingsTab(self, "Settings"), LearningTab(self, "Learning"), CameraTab(self, "Camera")]
     for tab in self.list_of_tabs:
       self.mainTabWidget.addTab(tab, tab.tab_name)
 

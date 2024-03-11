@@ -18,4 +18,4 @@ def GetRelativePath(var):
 
 # Image drawing settings
 drawing_color = (0, 255, 0)  # Default green
-drawing_thickness = 2
+drawing_thickness = 1

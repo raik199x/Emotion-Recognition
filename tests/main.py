@@ -27,7 +27,7 @@ test_result_folder_name = "test_result/"
 
 # Pre-creating classes that we going to test
 pfd_test_path = GetRelativePath("../" + pretrained_face_detector)
-face_detector = FaceDetector(pfd_test_path)
+face_detector = FaceDetector(pfd_test_path, 2)
 
 pflpm_test_path = GetRelativePath("../" + pretrained_face_landmarks_predictor_model)
 face_landmark_predictor = FaceLandmarkPredictor(pflpm_test_path)

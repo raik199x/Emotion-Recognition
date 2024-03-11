@@ -5,9 +5,9 @@ from shared import drawing_color, drawing_thickness
 
 
 class FaceDetector:
-  def __init__(self, pretrained_face_detector_path: str):
+  def __init__(self, pretrained_face_detector_path: str, image_improvement_level: int):
     self.detector = dlib.cnn_face_detection_model_v1(pretrained_face_detector_path)
-    self.image_improvement_level = 2
+    self.image_improvement_level = image_improvement_level
 
   def DetectFaces(self, image: np.array) -> dlib.mmod_rectangles:
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
