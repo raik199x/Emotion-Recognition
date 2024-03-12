@@ -24,8 +24,10 @@ class Connector:
     if height != 48 or width != 48:
       image = cv2.resize(image, (48, 48))
 
+    image = np.divide(image, 1000)  # Making all values between 0 and 1
+
     # Converting to tensor
-    return torch.from_numpy(image).to(pytorch_device).to(torch.float32)
+    return torch.from_numpy(image).to(pytorch_device).to(torch.float32).flatten()
 
   def ClassificationResultIntoEmotion(self, class_result: torch.tensor) -> str:
     result_index = torch.argmax(class_result)
