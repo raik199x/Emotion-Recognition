@@ -18,7 +18,9 @@ class LearningStatisticsTable(QTableView):
     self.model.setRowCount(self.amount_of_emotions)
     for num, emotion in enumerate(parser.emotion_list):
       self.model.setItem(num, 0, QStandardItem(emotion))
+      self.model.setItem(num, 1, QStandardItem("no iterations"))
       self.model.setItem(num, 2, QStandardItem(str(len(parser.testing_set_dict[emotion]))))
+      self.model.setItem(num, 3, QStandardItem("no iterations"))
 
     self.setShowGrid(True)
 
