@@ -1,4 +1,13 @@
-from PySide6.QtWidgets import QLabel, QVBoxLayout, QHBoxLayout, QPushButton, QFormLayout, QSizePolicy, QHeaderView, QAbstractItemView
+from PySide6.QtWidgets import (
+  QLabel,
+  QVBoxLayout,
+  QHBoxLayout,
+  QPushButton,
+  QFormLayout,
+  QSizePolicy,
+  QHeaderView,
+  QAbstractItemView,
+)
 from PySide6.QtCore import QThreadPool, Slot, Qt
 from ui.gui.tabs.abstract_tab import AbstractTabWidget
 from ui.gui.workers.learning_worker import LearningWorker
@@ -17,9 +26,6 @@ class LearningTab(AbstractTabWidget):
     # Worker connection (statistics)
     self.threadpool = QThreadPool()
     self.update_after_num_epochs = 5000  # TODO: is this even needed now?
-
-    self.label_current_epoch = QLabel("None")
-    self.label_current_emotion = QLabel("None")
 
     # Learning status
     self.label_model_train_status = QLabel("Model is not loaded. Check settings tab.")
@@ -46,12 +52,22 @@ class LearningTab(AbstractTabWidget):
     if not self.parser.LoadDatasetIntoRam() == 0:
       print("UNHANDLED ERROR")  # TODO
       exit(1)
-    layout_statistics = QHBoxLayout()
 
+    layout_statistics = QHBoxLayout()
+    # Left side of layout_statistics
     basic_stats_layout = QFormLayout()
-    basic_stats_layout.addRow(QLabel("Epoch: "), self.label_current_epoch)
-    basic_stats_layout.addRow(QLabel("Last triggered emotion: "), self.label_current_emotion)
+    self.label_epoch_num = QLabel("None")
+    self.label_last_triggered_emotion = QLabel("None")
+    basic_stats_layout.addRow(QLabel("Epoch: "), self.label_epoch_num)
+    basic_stats_layout.addRow(QLabel("Last triggered emotion: "), self.label_last_triggered_emotion)
     layout_statistics.addLayout(basic_stats_layout)
+    # Right side of layout_statistics
+    self.label_last_tensor = QLabel("None")
+    self.label_last_expected = QLabel("None")
+    iterations_results_layout = QFormLayout()
+    iterations_results_layout.addRow(QLabel("Latest iteration result: "), self.label_last_tensor)
+    iterations_results_layout.addRow(QLabel("Latest expected result: "), self.label_last_expected)
+    layout_statistics.addLayout(iterations_results_layout)
     self.main_vertical_layout.addLayout(layout_statistics)
 
     # Statistics table
@@ -120,9 +136,13 @@ class LearningTab(AbstractTabWidget):
     self.statistics_plot.plot(range(0, len(loss_results)), loss_results, name="Loss", pen=self.loss_coef_pen)
 
   @Slot()
-  def UpdateEpochStat(self, current_epoch: int, current_emotion: str) -> None:
-    self.label_current_epoch.setText(str(current_epoch))
-    self.label_current_emotion.setText(current_emotion)
+  def UpdateEpochStat(
+    self, current_epoch: int, current_emotion: str, last_expected: list[float, ...], last_tensor: list[int, ...]
+  ) -> None:
+    self.label_epoch_num.setText(str(current_epoch))
+    self.label_last_triggered_emotion.setText(current_emotion)
+    self.label_last_expected.setText(str(last_expected))
+    self.label_last_tensor.setText(str(last_tensor))
 
   @Slot()
   def UpdateClassificationResults(self, guessed_right: list[int, ...], emotions_average_loss: list[float, ...]) -> None:

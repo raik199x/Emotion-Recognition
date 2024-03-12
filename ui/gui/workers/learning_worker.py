@@ -4,13 +4,14 @@ from DeepLearning.dataset_parser import DatasetParser
 import torch
 import numpy as np
 from shared import GetRelativePath, pretrained_emotion_recognition_model
+from connector import Connector
 
 PretrainedModelRelativePath = GetRelativePath(pretrained_emotion_recognition_model)
 
 
 class LearningWorkerSignals(QObject):  # Creating signal so we can send data from testing loop
   redo_plots_signal = Signal(list, list)
-  update_epoch_stats_signal = Signal(int, str)
+  update_epoch_stats_signal = Signal(int, str, list, list)
   update_emotion_classification_result_signal = Signal(list, list)
 
 
@@ -25,12 +26,16 @@ class LearningWorker(QRunnable):
     # self.update_after_num_epochs = update_after_num_epochs
     self.signals = LearningWorkerSignals()
     self.parser = parser
+    self.connector = Connector()
 
     self.current_epoch = int()
     self.last_triggered_emotion = str
 
-  def UpdateAndSave(self):
-    self.signals.update_epoch_stats_signal.emit(self.current_epoch, self.last_triggered_emotion)
+  def UpdateAndSave(self, expected_list: list[int, ...], tensor_result: [float, ...]):
+    tensor_result = [round(num, 5) for num in tensor_result]
+    self.signals.update_epoch_stats_signal.emit(
+      self.current_epoch, self.last_triggered_emotion, expected_list, tensor_result
+    )
     self.MainWindowClass.emotion_classification_model.BackupModel("", PretrainedModelRelativePath)
 
   def TestingModel(self, parser: DatasetParser) -> list:
@@ -46,7 +51,7 @@ class LearningWorker(QRunnable):
       current_loss_coefficients = list()  # Storing all loss coefficient for current emotion
       for test_value in parser.testing_set_dict[emotion]:
         # Sending test data
-        tensor = torch.from_numpy(test_value).to(pytorch_device).to(torch.float32)
+        tensor = self.connector.ImageIntoTensor(test_value)
 
         fun_result = self.MainWindowClass.emotion_classification_model.TestingEpoch(tensor, expect)
 
@@ -70,21 +75,19 @@ class LearningWorker(QRunnable):
 
   def LearningModel(self, parser: DatasetParser, emotion_index: int):
     self.last_triggered_emotion = parser.emotion_list[emotion_index]
-    expect = (
-      torch.from_numpy(np.array(parser.emotion_expected_dict[self.last_triggered_emotion]))
-      .to(torch.float32)
-      .to(pytorch_device)
-    )
+    expect_list = parser.emotion_expected_dict[self.last_triggered_emotion]
+    expect_tensor = torch.from_numpy(np.array(expect_list)).to(torch.float32).to(pytorch_device)
+
     for train_value in parser.learning_set_dict[parser.emotion_list[emotion_index]]:
       # Sending training data
-      tensor = torch.from_numpy(train_value).to(pytorch_device).to(torch.float32)
-      self.MainWindowClass.emotion_classification_model.TrainEpoch(tensor, expect)
+      tensor = self.connector.ImageIntoTensor(train_value)
+      result_tensor = self.MainWindowClass.emotion_classification_model.TrainEpoch(tensor, expect_tensor)
 
       if not self.MainWindowClass.is_model_learning:  # User pressed stop button
         return
 
     self.current_epoch = self.current_epoch + 1
-    self.UpdateAndSave()
+    self.UpdateAndSave(expect_list, result_tensor.tolist())
 
   @Slot()
   def run(self):
@@ -94,6 +97,3 @@ class LearningWorker(QRunnable):
         break
       # Finding the worst identified emotion and telling model to learn it
       self.LearningModel(self.parser, emotions_average_loss.index(max(emotions_average_loss)))
-
-    # Exiting thread
-    self.UpdateAndSave()
