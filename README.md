@@ -22,7 +22,7 @@ if ~~crossed~~ means left undone
   - [x] Write training loop
   - [x] Write test loop
   - [x] Backup/Recover model
-  - [ ] Grub some statistics
+  - [x] Grub some statistics
   - [ ] Model actually does not recognize emotion =(
 - [ ] Analysis and stats module
 - [ ] Ui module (qt)

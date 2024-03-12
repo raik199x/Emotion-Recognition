@@ -1,7 +1,8 @@
-from PySide6.QtWidgets import QLabel, QVBoxLayout, QHBoxLayout, QPushButton, QFormLayout
+from PySide6.QtWidgets import QLabel, QVBoxLayout, QHBoxLayout, QPushButton, QFormLayout, QSizePolicy, QHeaderView, QAbstractItemView
 from PySide6.QtCore import QThreadPool, Slot, Qt
 from ui.gui.tabs.abstract_tab import AbstractTabWidget
 from ui.gui.workers.learning_worker import LearningWorker
+from ui.gui.custom_widgets.learning_statistics_table import LearningStatisticsTable
 from DeepLearning.dataset_parser import DatasetParser
 from shared import dataset_folder
 
@@ -15,11 +16,10 @@ class LearningTab(AbstractTabWidget):
 
     # Worker connection (statistics)
     self.threadpool = QThreadPool()
-    self.update_after_num_epochs = 5000
+    self.update_after_num_epochs = 5000  # TODO: is this even needed now?
 
     self.label_current_epoch = QLabel("None")
     self.label_current_emotion = QLabel("None")
-    self.label_full_dataset_iteration = QLabel("None")
 
     # Learning status
     self.label_model_train_status = QLabel("Model is not loaded. Check settings tab.")
@@ -41,27 +41,25 @@ class LearningTab(AbstractTabWidget):
     self.main_vertical_layout.addWidget(self.label_model_train_status)
     self.main_vertical_layout.addLayout(buttons_start_stop_layout)
 
-    # Statistics
+    # Statistics epoch
     self.parser = DatasetParser(dataset_folder)
     if not self.parser.LoadDatasetIntoRam() == 0:
       print("UNHANDLED ERROR")  # TODO
+      exit(1)
     layout_statistics = QHBoxLayout()
 
     basic_stats_layout = QFormLayout()
-    basic_stats_layout.addRow(QLabel("Epoch num (from the start): "), self.label_current_epoch)
-    basic_stats_layout.addRow(QLabel("Emotion (last triggered): "), self.label_current_emotion)
-    basic_stats_layout.addRow(QLabel("Full dataset iterations num: "), self.label_full_dataset_iteration)
+    basic_stats_layout.addRow(QLabel("Epoch: "), self.label_current_epoch)
+    basic_stats_layout.addRow(QLabel("Last triggered emotion: "), self.label_current_emotion)
     layout_statistics.addLayout(basic_stats_layout)
-
-    # Amount of successfully identified emotions
-    classification_stats_layout = QFormLayout()
-    self.classification_results_listOfLabels = list()
-    for num, emotion in enumerate(self.parser.emotion_list):
-      self.classification_results_listOfLabels.append(QLabel("0/0"))
-      classification_stats_layout.addRow(QLabel(emotion + ": "), self.classification_results_listOfLabels[num])
-    layout_statistics.addLayout(classification_stats_layout)
-
     self.main_vertical_layout.addLayout(layout_statistics)
+
+    # Statistics table
+    self.table_statistics = LearningStatisticsTable(self.parser)
+    self.table_statistics.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+    self.table_statistics.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+    self.table_statistics.setEditTriggers(QAbstractItemView.NoEditTriggers)
+    self.main_vertical_layout.addWidget(self.table_statistics)
 
     # Plots
     plot_styles = {"color": "red", "font-size": "20px"}
@@ -74,23 +72,6 @@ class LearningTab(AbstractTabWidget):
     self.statistics_plot.setLabel("bottom", "Epoch", **plot_styles)
     self.statistics_plot.showGrid(x=True, y=True)
     self.statistics_plot.addLegend()
-
-    # self.accuracy_plot = pg.PlotWidget()
-    # self.accuracy_plot.setTitle("Testing stats", color="b", size="20pt")
-    # self.accuracy_plot.setLabel("left", "Coefficient", **plot_styles)
-    # self.accuracy_plot.setLabel("bottom", "Epoch", **plot_styles)
-    # self.accuracy_plot.showGrid(x=True, y=True)
-
-    # self.loss_fn_plot = pg.PlotWidget()
-    # self.loss_fn_plot.setTitle("Loss function rate", color="b", size="20pt")
-    # self.loss_fn_plot.setLabel("left", "Loss", **plot_styles)
-    # self.loss_fn_plot.setLabel("bottom", "Epoch", **plot_styles)
-    # self.loss_fn_plot.showGrid(x=True, y=True)
-
-    # layout_plots = QHBoxLayout()
-    # layout_plots.addWidget(self.accuracy_plot)
-    # layout_plots.addWidget(self.loss_fn_plot)
-    # self.main_vertical_layout.addLayout(layout_plots)
     self.main_vertical_layout.addWidget(self.statistics_plot)
 
   def UserPressedStartButton(self) -> None:
@@ -100,8 +81,7 @@ class LearningTab(AbstractTabWidget):
 
     # Resetting stats
     self.current_epoch = 0
-    self.current_emotion = "Angry"
-    self.full_dataset_iteration = 0
+    self.current_emotion = "None"
 
     # Setting up worker
     worker = LearningWorker(self.ParentClass, self.update_after_num_epochs, self.parser)
@@ -132,7 +112,6 @@ class LearningTab(AbstractTabWidget):
 
   @Slot()
   def UpdatePlots(self, loss_results: list[float, ...], accuracy_results: list[float, ...]) -> None:
-    # self.loss_fn_plot.clear()
     self.statistics_plot.clear()
 
     self.statistics_plot.plot(
@@ -141,14 +120,10 @@ class LearningTab(AbstractTabWidget):
     self.statistics_plot.plot(range(0, len(loss_results)), loss_results, name="Loss", pen=self.loss_coef_pen)
 
   @Slot()
-  def UpdateEpochStat(self, current_epoch: int, current_emotion: str, full_dataset_iteration: int):
+  def UpdateEpochStat(self, current_epoch: int, current_emotion: str) -> None:
     self.label_current_epoch.setText(str(current_epoch))
     self.label_current_emotion.setText(current_emotion)
-    self.label_full_dataset_iteration.setText(str(full_dataset_iteration))
 
   @Slot()
-  def UpdateClassificationResults(self, classification_result: list):
-    for num, emotion in enumerate(self.parser.emotion_list):
-      self.classification_results_listOfLabels[num].setText(
-        str(classification_result[num]) + "/" + str(len(self.parser.testing_set_dict[emotion]))
-      )
+  def UpdateClassificationResults(self, guessed_right: list[int, ...], emotions_average_loss: list[float, ...]) -> None:
+    self.table_statistics.set_data(guessed_right, emotions_average_loss)
