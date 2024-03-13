@@ -25,7 +25,7 @@ class LearningTab(AbstractTabWidget):
 
     # Worker connection (statistics)
     self.threadpool = QThreadPool()
-    self.update_after_num_epochs = 5000  # TODO: is this even needed now?
+    self.update_after_num_epochs = 100  # TODO: is this even needed now?
 
     # Learning status
     self.label_model_train_status = QLabel("Model is not loaded. Check settings tab.")

@@ -9,20 +9,21 @@ class EmotionClassificationModel(torch.nn.Module):
     super().__init__()
 
     # Creating layers
-    self.input = torch.nn.Linear(in_features=48 * 48, out_features=512)
+    self.input = torch.nn.Linear(in_features=48 * 48, out_features=48 * 48)
 
-    self.hidden1 = torch.nn.Linear(in_features=512, out_features=512)
+    self.hidden1 = torch.nn.Linear(in_features=48 * 48, out_features=2048)
     self.drop1 = torch.nn.Dropout(0.3)
 
-    self.hidden2 = torch.nn.Linear(in_features=512, out_features=512)
+    self.hidden2 = torch.nn.Linear(in_features=2048, out_features=1024)
     self.drop2 = torch.nn.Dropout(0.2)
 
-    self.hidden3 = torch.nn.Linear(in_features=512, out_features=512)
+    self.hidden3 = torch.nn.Linear(in_features=1024, out_features=512)
     self.drop3 = torch.nn.Dropout(0.15)
 
     self.output = torch.nn.Linear(in_features=512, out_features=7)
 
     self.act = torch.nn.ReLU(inplace=True)
+    # self.act = torch.nn.Tanh()
     self.loss_fn = torch.nn.CrossEntropyLoss()  # Multi class classification, includes nn.LogSoftmax and nn.NLLLoss
     self.optimizer = self.CreateOptimizer()
 

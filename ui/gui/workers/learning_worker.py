@@ -6,6 +6,8 @@ import numpy as np
 from shared import GetRelativePath, pretrained_emotion_recognition_model
 from connector import Connector
 
+from random import shuffle
+
 PretrainedModelRelativePath = GetRelativePath(pretrained_emotion_recognition_model)
 
 
@@ -27,6 +29,7 @@ class LearningWorker(QRunnable):
     self.signals = LearningWorkerSignals()
     self.parser = parser
     self.connector = Connector()
+    self.update_cycle = update_after_num_epochs
 
     self.current_epoch = int()
     self.last_triggered_emotion = str
@@ -75,17 +78,30 @@ class LearningWorker(QRunnable):
 
   def LearningModel(self, parser: DatasetParser, emotion_index: int):
     self.last_triggered_emotion = parser.emotion_list[emotion_index]
+
+    # One image at a time
     expect_list = parser.emotion_expected_dict[self.last_triggered_emotion]
     expect_tensor = torch.from_numpy(np.array(expect_list)).to(torch.float32).to(pytorch_device)
+    if len(parser.learning_set_dict[self.last_triggered_emotion]) == 0:
+      parser.ReloadEmotion(parser.forLearning, self.last_triggered_emotion)
+    train_value = parser.learning_set_dict[self.last_triggered_emotion][-1]
+    parser.learning_set_dict[self.last_triggered_emotion].pop()
+    tensor = self.connector.ImageIntoTensor(train_value)
+    result_tensor = self.MainWindowClass.emotion_classification_model.TrainEpoch(tensor, expect_tensor)
 
-    for train_value in parser.learning_set_dict[parser.emotion_list[emotion_index]]:
-      # Sending training data
-      tensor = self.connector.ImageIntoTensor(train_value)
-      result_tensor = self.MainWindowClass.emotion_classification_model.TrainEpoch(tensor, expect_tensor)
+    # value_expected_list = list()
+    # for emotion in parser.emotion_list:
+    #   for test_value in parser.learning_set_dict[emotion]:
+    #     value_expected_list.append([test_value, parser.emotion_expected_dict[emotion]])
 
-      if not self.MainWindowClass.is_model_learning:  # User pressed stop button
-        return
+    # shuffle(value_expected_list)
+    # for value_expected in value_expected_list:
+    #   expect_list = value_expected[1]
+    #   expect_tensor = torch.from_numpy(np.array(expect_list)).to(torch.float32).to(pytorch_device)
+    #   tensor = self.connector.ImageIntoTensor(value_expected[0])
+    #   result_tensor = self.MainWindowClass.emotion_classification_model.TrainEpoch(tensor, expect_tensor)
 
+    # Updating and sending results
     self.current_epoch = self.current_epoch + 1
     self.UpdateAndSave(expect_list, result_tensor.tolist())
 
