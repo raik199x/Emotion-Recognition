@@ -33,19 +33,20 @@ if ~~crossed~~ means left undone
   - [x] Camera capture
   - [ ] Create chat tab
   - [x] Real time camera
+  - [ ] Create cloud storage sync tab
 - [ ] Poe.api (chatting with bots)
 - [x] ~~Camera module (using cv2)~~
 (reason: currently camera function are not shared between modules, so they are written directly in gui module)
 - [x] Base of pre-trained ML models module
   - [x] Downloaded face detection and landmark detection models
-- [ ] Web server learning module (?)
+- [ ] Backup dataset and pre-trained modules on mega.nz
 - [x] Dlib, set up for using cuda
 
 ## Requirements
 
 ### Cuda
 
-This project uses cuda 11.8. You should install it on your own, but you might want to visit [cuda 11.8 toolkit download page](https://developer.nvidia.com/cuda-11-8-0-download-archive) and [cudann archive page](https://developer.nvidia.com/rdp/cudnn-archive).
+This project uses cuda 11.8 (but you can try using newer version). You should install it on your own, but you might want to visit [cuda 11.8 toolkit download page](https://developer.nvidia.com/cuda-11-8-0-download-archive) and [cudann archive page](https://developer.nvidia.com/rdp/cudnn-archive).
 
 If your os is ubuntu, you can use [this guide](https://medium.com/@gokul.a.krishnan/how-to-install-cuda-cudnn-and-tensorflow-on-ubuntu-22-04-2023-20fdfdb96907) to install cuda + cudann.
 
@@ -90,9 +91,15 @@ Invalid handle. Cannot load symbol cublasLtCreate
 
 If you also encounter this error, you need to install [libcublasLt.so.12](https://packages.debian.org/trixie/amd64/libcublaslt12/download).
 
-### opencv
+### Required python packages
 
-```pip3 install cv2```
+Just run the following command:
+
+```pip3
+pip3 install -r requirements.txt
+```
+
+***IMPORTANT:*** ```requirements.txt``` does not include **dlib** and **pytorch** package
 
 ### Dataset
 

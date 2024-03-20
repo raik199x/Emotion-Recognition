@@ -1,0 +1,5 @@
+numpy
+cv2
+pyqtgraph
+PySide6
+megapy

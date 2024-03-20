@@ -3,7 +3,7 @@
 .mypy_cache/
 __pycache__/
 
-dataset/
+emotion_recognition_data/
 test_result/
 git_file_ignore*
 
