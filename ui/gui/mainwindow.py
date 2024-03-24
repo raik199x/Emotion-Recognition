@@ -34,14 +34,19 @@ class MainWindow(QMainWindow):
       LearningTab(self, "Learning"),
       CameraTab(self, "Camera"),
     ]
-    for index, tab in enumerate(self.list_of_tabs):
+
+    for index in range(0, len(self.list_of_tabs)):
+      if self.list_of_tabs[index].tab_name == "Camera":
+        self.camera_tab_index = index
+        break
+    # moved to another for since triggers changedTab signals and throws error of missing var
+    for tab in self.list_of_tabs:
       self.mainTabWidget.addTab(tab, tab.tab_name)
 
   def TabChanged(self, index):
-    # TODO: remove hardcode
     if self.list_of_tabs[index].tab_name != "Camera":
-      if self.list_of_tabs[3].capture.isOpened():
-        self.list_of_tabs[3].capture.release()
+      if self.list_of_tabs[self.camera_tab_index].capture.isOpened():
+        self.list_of_tabs[self.camera_tab_index].capture.release()
 
     self.list_of_tabs[index].UserSelectedTab()
 
