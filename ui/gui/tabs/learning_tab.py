@@ -1,19 +1,11 @@
-from PySide6.QtWidgets import (
-  QLabel,
-  QVBoxLayout,
-  QHBoxLayout,
-  QPushButton,
-  QFormLayout,
-  QSizePolicy,
-  QHeaderView,
-  QAbstractItemView,
-)
+from PySide6.QtWidgets import QLabel, QVBoxLayout, QHBoxLayout, QFormLayout, QSizePolicy, QHeaderView, QAbstractItemView
 from PySide6.QtCore import QThreadPool, Slot, Qt
 from ui.gui.tabs.abstract_tab import AbstractTabWidget
 from ui.gui.workers.learning_worker import LearningWorker
 from ui.gui.custom_widgets.learning_statistics_table import LearningStatisticsTable
+from ui.gui.custom_widgets.dark_style_button import DarkStyleButton
 from DeepLearning.dataset_parser import DatasetParser
-from shared import dataset_folder
+from shared import dataset_folder_path
 
 import pyqtgraph as pg
 
@@ -32,11 +24,11 @@ class LearningTab(AbstractTabWidget):
     self.label_model_train_status.setAlignment(Qt.AlignCenter)
     self.label_model_train_status.setStyleSheet("font-weight: bold; font-size: 16px")
 
-    self.button_start_model_train = QPushButton("Start training")
+    self.button_start_model_train = DarkStyleButton("Start training")
     self.button_start_model_train.setEnabled(False)
     self.button_start_model_train.clicked.connect(self.UserPressedStartButton)
 
-    self.button_stop_model_train = QPushButton("Stop training")
+    self.button_stop_model_train = DarkStyleButton("Stop training")
     self.button_stop_model_train.setEnabled(False)
     self.button_stop_model_train.clicked.connect(self.UserPressedStopButton)
 
@@ -48,7 +40,7 @@ class LearningTab(AbstractTabWidget):
     self.main_vertical_layout.addLayout(buttons_start_stop_layout)
 
     # Statistics epoch
-    self.parser = DatasetParser(dataset_folder)
+    self.parser = DatasetParser(dataset_folder_path)
     if not self.parser.LoadDatasetIntoRam() == 0:
       print("UNHANDLED ERROR")  # TODO
       exit(1)

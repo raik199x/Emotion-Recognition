@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget
 from ui.gui.tabs.learning_tab import LearningTab
 from ui.gui.tabs.settings_tab import SettingsTab
 from ui.gui.tabs.camera_tab import CameraTab
+from ui.gui.tabs.storage_tab import StorageTab
 from DeepLearning.model import EmotionClassificationModel
 from DeepLearning.settings import pytorch_device
 
@@ -27,15 +28,20 @@ class MainWindow(QMainWindow):
     self.is_model_learning = False  # Forbids changing model settings
 
     # Tabs
-    self.list_of_tabs = [SettingsTab(self, "Settings"), LearningTab(self, "Learning"), CameraTab(self, "Camera")]
-    for tab in self.list_of_tabs:
+    self.list_of_tabs = [
+      SettingsTab(self, "Settings"),
+      StorageTab(self, "Storages"),
+      LearningTab(self, "Learning"),
+      CameraTab(self, "Camera"),
+    ]
+    for index, tab in enumerate(self.list_of_tabs):
       self.mainTabWidget.addTab(tab, tab.tab_name)
 
   def TabChanged(self, index):
     # TODO: remove hardcode
     if self.list_of_tabs[index].tab_name != "Camera":
-      if self.list_of_tabs[2].capture.isOpened():
-        self.list_of_tabs[2].capture.release()
+      if self.list_of_tabs[3].capture.isOpened():
+        self.list_of_tabs[3].capture.release()
 
     self.list_of_tabs[index].UserSelectedTab()
 

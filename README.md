@@ -33,7 +33,8 @@ if ~~crossed~~ means left undone
   - [x] Camera capture
   - [ ] Create chat tab
   - [x] Real time camera
-  - [ ] Create cloud storage sync tab
+  - [x] Create cloud storage sync tab
+  - [ ] Create button to add storages
 - [ ] Poe.api (chatting with bots)
 - [x] ~~Camera module (using cv2)~~
 (reason: currently camera function are not shared between modules, so they are written directly in gui module)
@@ -41,6 +42,7 @@ if ~~crossed~~ means left undone
   - [x] Downloaded face detection and landmark detection models
 - [ ] Backup dataset and pre-trained modules on mega.nz
 - [x] Dlib, set up for using cuda
+- [ ] Add config file for app (probably ini or json)
 
 ## Requirements
 

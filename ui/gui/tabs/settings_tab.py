@@ -1,6 +1,7 @@
-from PySide6.QtWidgets import QFileDialog, QMessageBox, QPushButton, QVBoxLayout, QHBoxLayout, QLabel, QTextBrowser
+from PySide6.QtWidgets import QFileDialog, QMessageBox, QVBoxLayout, QHBoxLayout, QLabel, QTextBrowser
 from PySide6.QtCore import QThreadPool
 from ui.gui.tabs.abstract_tab import AbstractTabWidget
+from ui.gui.custom_widgets.dark_style_button import DarkStyleButton
 from torch import __version__ as pytorch_version
 from DeepLearning.settings import pytorch_device
 from shared import pretrained_emotion_recognition_model, GetRelativePath
@@ -24,9 +25,9 @@ class SettingsTab(AbstractTabWidget):
       self.ParentClass.emotion_classification_model.LoadModel(PretrainedModelRelativePath)
       self.SetLoadModelStatus(True)
 
-    self.button_set_model_path = QPushButton("Load pretrained model")
+    self.button_set_model_path = DarkStyleButton("Load pretrained model")
     self.button_set_model_path.clicked.connect(self.OnLoadModelButtonClicked)
-    self.button_create_new_model = QPushButton("Create new model")
+    self.button_create_new_model = DarkStyleButton("Create new model")
     self.button_create_new_model.clicked.connect(self.OnCreateModelButtonClicked)
 
     layout_model_statue = QHBoxLayout()

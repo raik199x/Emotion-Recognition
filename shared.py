@@ -1,7 +1,9 @@
 from sys import argv
 from os import path
+from PySide6.QtCore import QSize
 
-
+# Paths
+assets_folder_path = "assets/"
 data_folder_path = "emotion_recognition_data/"
 dataset_folder_path = data_folder_path + "dataset/"
 pretrained_face_landmarks_predictor_model = data_folder_path + "shape_predictor_68_face_landmarks.dat"
@@ -20,3 +22,6 @@ def GetRelativePath(var):
 # Image drawing settings
 drawing_color = (0, 255, 0)  # Default green
 drawing_thickness = 1
+
+# Gui
+icon_size = QSize(40, 40)
