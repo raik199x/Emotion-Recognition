@@ -14,7 +14,7 @@ class AbstractStorageWidget(QWidget):
 
     container_widget = QFrame()
     container_widget.setStyleSheet("background-color: #272727; border-radius: 10px;")
-    
+
     # Layouts
     container_layout = QVBoxLayout(container_widget)
     label_storage_name = QLabel(storage_name)

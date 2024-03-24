@@ -1,11 +1,17 @@
 from shared import data_folder_path
 
+import codes
 
-class AbstractCloudStorage:
+
+class AbstractCloudStorage(codes.ReturnCodes):
   def __init__(self):
-    self.success_code = "success"
-    self.not_supported_code = "not_supported"
+    super().__init__()
+    # Folder to search and save in cloud
     self.data_folder_name = data_folder_path[:-1]  # removing / on the end
+
+    # Flags (only one of 2  must be set to true in child class)
+    self.isAuthViaToken = False
+    self.isAuthViaCredentials = False
 
   def checkDataFolderExistence(self) -> bool:
     raise NotImplementedError("checkProjectFolderExistence is not implemented for current class")
