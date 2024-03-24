@@ -8,3 +8,4 @@ test_result/
 git_file_ignore*
 
 emotion_recognition_model.pt
+.project_config.ini

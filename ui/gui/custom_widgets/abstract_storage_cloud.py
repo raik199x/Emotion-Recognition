@@ -6,15 +6,24 @@ from shared import icon_size, assets_folder_path
 
 
 class AbstractStorageWidget(QWidget):
-  def __init__(self, icon_path: str, storage_class):
+  def __init__(self, storage_name: str, icon_path: str, storage_class):
     super().__init__()
     main_layout = QVBoxLayout()
     self.setLayout(main_layout)
-    self.setFixedHeight(85)
+    self.setFixedHeight(110)
 
     container_widget = QFrame()
     container_widget.setStyleSheet("background-color: #272727; border-radius: 10px;")
-    basic_info = QHBoxLayout(container_widget)
+    
+    # Layouts
+    container_layout = QVBoxLayout(container_widget)
+    label_storage_name = QLabel(storage_name)
+    label_storage_name.setAlignment(Qt.AlignCenter)
+    label_storage_name.setStyleSheet("font-size: 16px; font-weight: solid;")
+    container_layout.addWidget(label_storage_name)
+
+    basic_info = QHBoxLayout()
+    container_layout.addLayout(basic_info)
 
     cloud_storage_icon = QLabel()
     cloud_storage_icon.setPixmap(QPixmap(icon_path).scaled(icon_size))
