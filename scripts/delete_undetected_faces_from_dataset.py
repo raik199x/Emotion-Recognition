@@ -12,7 +12,6 @@ for folder in list_of_folder:
   print("-----------------------------")
   print(f"Current folder: {folder}.")
   files_in_folder = os.listdir(path_to_dataset + folder)
-  # print(f"Total files: {len(files_in_folder)}")
   count = 0
   for num, file in enumerate(files_in_folder):
     image = cv2.imread(path_to_dataset + folder + file)
