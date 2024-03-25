@@ -1,6 +1,7 @@
 from shared import data_folder_path
 
 import codes
+import shutil
 
 
 class AbstractCloudStorage(codes.ReturnCodes):
@@ -8,6 +9,7 @@ class AbstractCloudStorage(codes.ReturnCodes):
     super().__init__()
     # Folder to search and save in cloud
     self.data_folder_name = data_folder_path[:-1]  # removing / on the end
+    self.zipped_folder_name = self.data_folder_name + ".zip"
 
     # Vars
     self.cloud_storage_name = str()
@@ -25,11 +27,17 @@ class AbstractCloudStorage(codes.ReturnCodes):
   def pullDataFolder(self) -> str:
     raise NotImplementedError("pullDataFolder is not implemented for current class")
 
-  def syncDataFolder(self) -> str:
-    raise NotImplementedError("syncDataFolder is not implemented for current class")
+  def removeDataFolder(self) -> str:
+    raise NotImplementedError("removeDataFolder is not implemented for current class")
 
   def loginViaCredentials(self, email: str, password: str) -> str:
     raise NotImplementedError("loginViaCredentials is not implemented for current class")
 
   def loginViaToken(self, token: str) -> str:
     raise NotImplementedError("loginViaToken is not implemented for current class")
+
+  def zipFolder(self):
+    shutil.make_archive(self.data_folder_name, format="zip", root_dir=".", base_dir=self.data_folder_name)
+
+  def unzipFolder(self):
+    shutil.unpack_archive(self.zipped_folder_name)

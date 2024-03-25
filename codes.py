@@ -5,3 +5,5 @@ class ReturnCodes:
     self.unknown_code = "unknown"
     self.storage_exist_code = "storage name already exists"
     self.fail_code = "failed"
+    self.folder_not_found = "Folder was not found"
+    self.folder_exist = "Folder is already exist"

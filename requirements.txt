@@ -3,5 +3,4 @@ opencv-python
 pyqtgraph
 PySide6
 mega.py
-yadisk
 configparser

@@ -39,11 +39,9 @@ class LearningTab(AbstractTabWidget):
     self.main_vertical_layout.addWidget(self.label_model_train_status)
     self.main_vertical_layout.addLayout(buttons_start_stop_layout)
 
-    # Statistics epoch
+    # Dataset settings
     self.parser = DatasetParser(dataset_folder_path)
-    if not self.parser.LoadDatasetIntoRam() == 0:
-      print("UNHANDLED ERROR")  # TODO
-      exit(1)
+    #! Need to add a lot of checks while folder might be deleted
 
     layout_statistics = QHBoxLayout()
     # Left side of layout_statistics

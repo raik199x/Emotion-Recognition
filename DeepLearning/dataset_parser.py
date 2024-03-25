@@ -5,6 +5,7 @@ import cv2
 class DatasetParser:
   def __init__(self, path_to_dataset_folder: str):
     self.dataset_path = path_to_dataset_folder
+    self.isParserLoaded = False
     # Dataset constants
     self.angry = "angry"
     self.disgust = "disgust"
@@ -106,4 +107,5 @@ class DatasetParser:
     if os.path.exists(path_to_testing) and os.path.isdir(path_to_testing):
       self.testing_set_dict = self.ParseFolderWithEmotions(path_to_testing)
 
+    self.isParserLoaded = True
     return 0

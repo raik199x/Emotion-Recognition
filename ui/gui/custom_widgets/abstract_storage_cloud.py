@@ -16,6 +16,11 @@ class AbstractStorageWidget(QWidget):
     self.storage_name = storage_name
     self.cloud_storage = storage_class
 
+    # Statuses
+    self.no_info = "Refresh required"
+    self.folder_not_found = "Storage does not have emotion recognition data"
+    self.folder_found = "Storage was found"
+
     main_layout = QVBoxLayout()
     self.setLayout(main_layout)
     self.setFixedHeight(110)
@@ -38,24 +43,31 @@ class AbstractStorageWidget(QWidget):
     cloud_storage_icon.setAlignment(Qt.AlignCenter)
 
     overview_layout = QVBoxLayout()
-    self.label_status = QLabel("Nothing to do now")
+    self.label_status = QLabel(self.no_info)
     self.label_status.setAlignment(Qt.AlignRight)
 
     buttons_layout = QHBoxLayout()  # start buttons layout
 
-    button_push = DarkStyleButton("Push")
-    button_push.setToolTip("Pushes folder to the cloud")
-    button_push.clicked.connect(self.pushPressed)
+    button_refresh = DarkStyleButton("Refresh")
+    button_refresh.clicked.connect(self.refreshPressed)
 
     button_pull = DarkStyleButton("Pull")
-    button_pull.setToolTip("Pulls folder from the cloud")
     button_pull.clicked.connect(self.pullPressed)
+
+    button_push = DarkStyleButton("Push")
+    button_push.clicked.connect(self.pushPressed)
+
+    button_remove = DarkStyleButton("Remove")
+    button_remove.setToolTip("Remove folder from cloud")
+    button_remove.clicked.connect(self.removePressed)
 
     button_logout = DarkStyleButton("Logout")
     button_logout.clicked.connect(self.logoutPressed)
 
-    buttons_layout.addWidget(button_push)
+    buttons_layout.addWidget(button_refresh)
     buttons_layout.addWidget(button_pull)
+    buttons_layout.addWidget(button_push)
+    buttons_layout.addWidget(button_remove)
     buttons_layout.addWidget(button_logout)  # end buttons layout
 
     overview_layout.addWidget(self.label_status)
@@ -69,13 +81,24 @@ class AbstractStorageWidget(QWidget):
     basic_info.addLayout(overview_layout)
     basic_info.addWidget(self.current_status_icon)
 
+    # Finalize
     main_layout.addWidget(container_widget)
+    self.refreshPressed()
+
+  def removePressed(self):
+    self.cloud_storage.removeDataFolder()
+    self.cloud_storage.checkDataFolderExistence()
 
   def pullPressed(self):
-    print("Button pull pressed")
+    self.cloud_storage.pullDataFolder()
 
   def pushPressed(self):
-    print("Button push pressed")
+    self.cloud_storage.pushDataFolder()
+    self.cloud_storage.checkDataFolderExistence()
+
+  def refreshPressed(self):
+    result = self.cloud_storage.checkDataFolderExistence()
+    self.label_status.setText(self.folder_found if result else self.folder_not_found)
 
   def logoutPressed(self):
     self.signals.delete_widget.emit(self.cloud_storage.cloud_storage_name, self.storage_name)

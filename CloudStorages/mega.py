@@ -1,4 +1,5 @@
 import mega
+import os
 from CloudStorages.abstract_cloud_storage import AbstractCloudStorage
 
 
@@ -23,11 +24,37 @@ class MegaCloud(AbstractCloudStorage):
 
     return self.success_code
 
-  def checkDataFolderExistence(self) -> str:
-    file = self.account.find(self.data_folder_name)
-    return True if len(file) != 0 else False
+  def removeDataFolder(self) -> str:
+    archive = self.account.find(self.zipped_folder_name)
+    if not archive:
+      return self.folder_not_found
 
-  def GetAccountInfo(self) -> dict():
-    quota = self.account.get_quota()
-    space = self.account.get_storage_space(giga=True)
-    return {"quota": quota, "space": space}
+    self.account.delete(archive[0])
+    return self.success_code
+
+  def pushDataFolder(self) -> str:
+    if self.checkDataFolderExistence():
+      return self.folder_exist
+    self.zipFolder()
+    self.account.upload(self.zipped_folder_name)
+    os.remove(self.zipped_folder_name)
+    return self.success_code
+
+  def pullDataFolder(self) -> str:
+    if os.path.exists(self.data_folder_name):
+      return self.folder_exist
+    archive = self.account.find(self.zipped_folder_name)
+    if not archive:
+      return self.folder_not_found
+    self.account.download(archive)
+    self.unzipFolder()
+    os.remove(self.zipped_folder_name)
+
+  def checkDataFolderExistence(self) -> str:
+    file = self.account.find(self.zipped_folder_name)
+    return True if file is not None else False
+
+  # def GetAccountInfo(self) -> dict():
+  #   quota = self.account.get_quota()
+  #   space = self.account.get_storage_space(giga=True)
+  #   return {"quota": quota, "space": space}
