@@ -6,7 +6,7 @@ import numpy as np
 from shared import GetRelativePath, pretrained_emotion_recognition_model
 from connector import Connector
 
-from random import shuffle
+# from random import shuffle
 
 PretrainedModelRelativePath = GetRelativePath(pretrained_emotion_recognition_model)
 

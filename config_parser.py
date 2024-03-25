@@ -20,8 +20,13 @@ class ProjectConfig(codes.ReturnCodes):
     with open(self.config_name, "w") as config_file:
       self.config.write(config_file)
 
-  def addStorageEntry(self, cloud_provider_name: str, storage_name: str, key_value_pairs: dict) -> str:
-    section_name = self.storage_index + self.delimiter + cloud_provider_name + self.delimiter + storage_name
+  def deleteStorageEntry(self, provider_name: str, storage_name: str):
+    section_name = self.storage_index + self.delimiter + provider_name + self.delimiter + storage_name
+    self.config.remove_section(section_name)
+    self.saveConfig()
+
+  def addStorageEntry(self, provider_name: str, storage_name: str, key_value_pairs: dict) -> str:
+    section_name = self.storage_index + self.delimiter + provider_name + self.delimiter + storage_name
 
     isExist = True
     try:

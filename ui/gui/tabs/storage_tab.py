@@ -3,7 +3,7 @@ from ui.gui.custom_widgets.abstract_storage_cloud import AbstractStorageWidget
 from ui.gui.custom_widgets.dark_style_button import DarkStyleButton
 from ui.gui.custom_widgets.add_storage_dialog import AddStorageDialog
 from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QScrollArea, QWidget, QSpacerItem, QSizePolicy
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Slot
 from shared import assets_folder_path
 from CloudStorages.cloud_storage_interface import CloudStorageInterface
 from config_parser import ProjectConfig
@@ -38,8 +38,12 @@ class StorageTab(AbstractTabWidget):
     self.button_add_storage = DarkStyleButton("Add storage")
     self.button_add_storage.clicked.connect(self.addStoragePressed)
 
+    self.button_refresh_storage = DarkStyleButton("Refresh storage")
+    self.button_refresh_storage.clicked.connect(self.refreshStorages)
+
     upper_layout.addWidget(self.status_label)
     upper_layout.addWidget(self.button_add_storage)
+    upper_layout.addWidget(self.button_refresh_storage)
     self.content_layout.addLayout(upper_layout)  # end of upper_layout
 
     self.storage_widgets_layout = QVBoxLayout()  # This layout will store all storage widgets
@@ -57,7 +61,9 @@ class StorageTab(AbstractTabWidget):
 
   def addCloudWidget(self, cloud_class, storage_name: str):
     path_to_icon = assets_folder_path + self.assets_dict[cloud_class.cloud_storage_name]
-    self.storage_widgets_layout.addWidget(AbstractStorageWidget(storage_name, path_to_icon, cloud_class))
+    cloud_widget = AbstractStorageWidget(storage_name, path_to_icon, cloud_class)
+    cloud_widget.signals.delete_widget.connect(self.removeStorage)
+    self.storage_widgets_layout.addWidget(cloud_widget)
 
   def refreshStorages(self):
     self.clearLayout(self.storage_widgets_layout)
@@ -66,6 +72,12 @@ class StorageTab(AbstractTabWidget):
     entrees = config.getStorageEntrees()
     for entry in entrees:
       self.addCloudWidget(entry[0], entry[1])
+
+  @Slot()
+  def removeStorage(self, provider_name: str, storage_name: str):
+    config = ProjectConfig()
+    config.deleteStorageEntry(provider_name, storage_name)
+    self.refreshStorages()
 
   def addStoragePressed(self) -> None:
     window = AddStorageDialog()
