@@ -9,6 +9,9 @@ class AbstractCloudStorage(codes.ReturnCodes):
     # Folder to search and save in cloud
     self.data_folder_name = data_folder_path[:-1]  # removing / on the end
 
+    # Vars
+    self.cloud_storage_name = str()
+
     # Flags (only one of 2  must be set to true in child class)
     self.isAuthViaToken = False
     self.isAuthViaCredentials = False

@@ -10,7 +10,8 @@ class AddStorageDialog(QDialog):
   def __init__(self):
     super().__init__()
     # Flags
-    self.isCancelExit = True
+    self.return_instance = None
+    self.return_storage_name = str()
 
     # Reg exp
     self.regular_expression_no_spaces = QRegularExpressionValidator(QRegularExpression(r"\S+"))
@@ -118,7 +119,8 @@ class AddStorageDialog(QDialog):
       return
 
     # Finalize
-    self.isCancelExit = False
+    self.return_instance = cloud_storage
+    self.return_storage_name = self.line_edit_storage_name.text()
     self.close()
 
   def addCredentialsInput(self, layout: QVBoxLayout) -> None:

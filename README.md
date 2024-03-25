@@ -8,42 +8,6 @@ Emotion recognition on python + pytorch. Made as diploma work for Belarusian Sta
 
 This app in under development, everything described in this project might and WILL be changed.
 
-### TODO
-
-if ~~crossed~~ means left undone
-
-- [x] Parse dataset
-  - [x] Using program parse dataset to find all images where faces are identified.
-  - [x] ~~By hand seek and delete images that is failed to properly set 68 point landmarks.~~ (reason: dataset is too large to fix it by hand)
-- [x] Face detection module
-- [x] ~~Face landmark module~~ (reason: This approach is bad, so back to analyzing 48x48 images)
-- [ ] Emotion recognition module
-  - [x] Write support function to get training/test data
-  - [x] Write training loop
-  - [x] Write test loop
-  - [x] Backup/Recover model
-  - [x] Grub some statistics
-  - [ ] Model actually does not recognize emotion =(
-- [ ] Analysis and stats module
-- [ ] Ui module (qt)
-  - [x] Implement multithreading on pressing start learning
-  - [x] Implement learning algorithm
-  - [x] Plot graphics of loss function
-  - [x] Plot graphics of accuracy
-  - [x] Camera capture
-  - [ ] Create chat tab
-  - [x] Real time camera
-  - [x] Create cloud storage sync tab
-  - [ ] Create button to add storages
-- [ ] Poe.api (chatting with bots)
-- [x] ~~Camera module (using cv2)~~
-(reason: currently camera function are not shared between modules, so they are written directly in gui module)
-- [x] Base of pre-trained ML models module
-  - [x] Downloaded face detection and landmark detection models
-- [ ] Backup dataset and pre-trained modules on mega.nz
-- [x] Dlib, set up for using cuda
-- [ ] Add config file for app (probably ini or json)
-
 ## Requirements
 
 ### Cuda

@@ -6,7 +6,7 @@ import codes
 class CloudStorageInterface(codes.ReturnCodes):
   def __init__(self):
     super().__init__()
-    self.mega_cloud_name = "Mega"
+    self.mega_cloud_name = MegaCloud().cloud_storage_name
     self.yandex_cloud_name = "Yandex disk"
     self.list_supported_cloud = [self.mega_cloud_name, self.yandex_cloud_name]
 

@@ -7,7 +7,10 @@ class MegaCloud(AbstractCloudStorage):
     super().__init__()
     self.mega = mega.Mega()
     self.account = None
+
+    # Setting up vars
     self.isAuthViaCredentials = True
+    self.cloud_storage_name = "Mega"
 
   def loginViaToken(self, token) -> str:
     return self.not_supported_code
