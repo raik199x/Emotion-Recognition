@@ -69,9 +69,6 @@ class SettingsTab(AbstractTabWidget):
       + "\n"
       + "Model is running on:\t"
       + pytorch_device
-      + "\n"
-      + "Maximum threads:\t"
-      + str(self.threadpool.maxThreadCount())
     )
     self.main_vertical_layout.addWidget(self.textBrowser_current_run_info)
 

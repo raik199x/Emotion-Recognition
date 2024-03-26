@@ -1,7 +1,8 @@
-from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QFrame
+from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QFrame, QMessageBox
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt, Signal, QObject
 from ui.gui.custom_widgets.dark_style_button import DarkStyleButton
+from ui.gui.workers.storage_worker import StorageWorker, StorageWorkerTasks
 from shared import icon_size, assets_folder_path
 
 
@@ -10,8 +11,9 @@ class AbstractStorageSignals(QObject):
 
 
 class AbstractStorageWidget(QWidget):
-  def __init__(self, storage_name: str, icon_path: str, storage_class):
+  def __init__(self, ParentClass, storage_name: str, icon_path: str, storage_class):
     super().__init__()
+    self.ParentClass = ParentClass
     self.signals = AbstractStorageSignals()
     self.storage_name = storage_name
     self.cloud_storage = storage_class
@@ -85,20 +87,37 @@ class AbstractStorageWidget(QWidget):
     main_layout.addWidget(container_widget)
     self.refreshPressed()
 
+  def isStorageBusy(self):
+    if self.ParentClass.is_storage_busy:
+      QMessageBox.warning(self, "Warning", "Storage is currently busy")
+      return True
+    return False
+
   def removePressed(self):
+    if self.isStorageBusy():
+      return
     self.cloud_storage.removeDataFolder()
     self.refreshPressed()
 
   def pullPressed(self):
-    self.cloud_storage.pullDataFolder()
+    if self.isStorageBusy():
+      return
+    worker = StorageWorker(self, StorageWorkerTasks().task_pull)
+    self.ParentClass.threadpool.start(worker)
 
   def pushPressed(self):
-    self.cloud_storage.pushDataFolder()
-    self.refreshPressed()
+    if self.isStorageBusy():
+      return
+    worker = StorageWorker(self, StorageWorkerTasks().task_push)
+    self.ParentClass.threadpool.start(worker)
 
-  def refreshPressed(self):
+  def refreshPressed(self, force_check=False):
+    if self.isStorageBusy() and not force_check:
+      return
     result = self.cloud_storage.checkDataFolderExistence()
     self.label_status.setText(self.folder_found if result else self.folder_not_found)
 
   def logoutPressed(self):
+    if self.isStorageBusy():
+      return
     self.signals.delete_widget.emit(self.cloud_storage.cloud_storage_name, self.storage_name)

@@ -55,7 +55,7 @@ class StorageTab(AbstractTabWidget):
 
   def addCloudWidget(self, cloud_class, storage_name: str):
     path_to_icon = assets_folder_path + self.assets_dict[cloud_class.cloud_storage_name]
-    cloud_widget = AbstractStorageWidget(storage_name, path_to_icon, cloud_class)
+    cloud_widget = AbstractStorageWidget(self.ParentClass, storage_name, path_to_icon, cloud_class)
     cloud_widget.signals.delete_widget.connect(self.removeStorage)
     self.storage_widgets_layout.addWidget(cloud_widget)
 

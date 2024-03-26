@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QLabel, QVBoxLayout, QHBoxLayout, QFormLayout, QSizePolicy, QHeaderView, QAbstractItemView
-from PySide6.QtCore import QThreadPool, Slot, Qt
+from PySide6.QtCore import Slot, Qt
 from ui.gui.tabs.abstract_tab import AbstractTabWidget
 from ui.gui.workers.learning_worker import LearningWorker
 from ui.gui.custom_widgets.learning_statistics_table import LearningStatisticsTable
@@ -13,7 +13,6 @@ class LearningTab(AbstractTabWidget):
     self.main_vertical_layout = QVBoxLayout(self)
 
     # Worker connection (statistics)
-    self.threadpool = QThreadPool()
     self.update_after_num_epochs = 100  # TODO: is this even needed now?
 
     # Learning status
@@ -88,7 +87,7 @@ class LearningTab(AbstractTabWidget):
     worker.signals.redo_plots_signal.connect(self.UpdatePlots)
     worker.signals.update_epoch_stats_signal.connect(self.UpdateEpochStat)
     worker.signals.update_emotion_classification_result_signal.connect(self.UpdateClassificationResults)
-    self.threadpool.start(worker)
+    self.ParentClass.threadpool.start(worker)
 
     self.label_model_train_status.setText("Model is running")
 
@@ -96,13 +95,13 @@ class LearningTab(AbstractTabWidget):
     self.button_start_model_train.setEnabled(True)
     self.button_stop_model_train.setEnabled(False)
     self.ParentClass.is_model_learning = False
-    self.threadpool.waitForDone()  # Waiting until model successfully saves itself
+    self.ParentClass.threadpool.waitForDone()  # Waiting until model successfully saves itself
     self.label_model_train_status.setText("Ready for training")
 
   def UserSelectedTab(self) -> None:
     if self.ParentClass.is_model_learning:
       return
-    
+
     error_message = "Model is not loaded. Check settings tab."
     if self.ParentClass.is_model_loaded:
       error_message = "Dataset is not loaded. Check settings tab."

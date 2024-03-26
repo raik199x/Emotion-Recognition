@@ -1,4 +1,5 @@
 from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget
+from PySide6.QtCore import QThreadPool
 from ui.gui.tabs.learning_tab import LearningTab
 from ui.gui.tabs.settings_tab import SettingsTab
 from ui.gui.tabs.camera_tab import CameraTab
@@ -29,10 +30,12 @@ class MainWindow(QMainWindow):
 
     # flags
     self.is_model_loaded = False  # Shows if model file was selected
+    self.is_storage_busy = False  # Forbids using commands in storage tab
     self.is_model_learning = False  # Forbids changing model settings
 
     self.FaceDetector = FaceDetector(pretrained_face_detector, 0)  # dlib face detector
     self.parser = self.reloadParser()  # dataset parser
+    self.threadpool = QThreadPool()  # Configurable threads
 
     # Tabs
     self.list_of_tabs = [
