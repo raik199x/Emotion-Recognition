@@ -87,14 +87,14 @@ class AbstractStorageWidget(QWidget):
 
   def removePressed(self):
     self.cloud_storage.removeDataFolder()
-    self.cloud_storage.checkDataFolderExistence()
+    self.refreshPressed()
 
   def pullPressed(self):
     self.cloud_storage.pullDataFolder()
 
   def pushPressed(self):
     self.cloud_storage.pushDataFolder()
-    self.cloud_storage.checkDataFolderExistence()
+    self.refreshPressed()
 
   def refreshPressed(self):
     result = self.cloud_storage.checkDataFolderExistence()

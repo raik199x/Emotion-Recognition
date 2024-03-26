@@ -9,6 +9,8 @@ class MegaCloud(AbstractCloudStorage):
     self.mega = mega.Mega()
     self.account = None
 
+    self.deleted_file_name = "trashed.zip"
+
     # Setting up vars
     self.isAuthViaCredentials = True
     self.cloud_storage_name = "Mega"
@@ -29,6 +31,7 @@ class MegaCloud(AbstractCloudStorage):
     if not archive:
       return self.folder_not_found
 
+    self.account.rename(archive, self.deleted_file_name)
     self.account.delete(archive[0])
     return self.success_code
 
@@ -53,8 +56,3 @@ class MegaCloud(AbstractCloudStorage):
   def checkDataFolderExistence(self) -> str:
     file = self.account.find(self.zipped_folder_name)
     return True if file is not None else False
-
-  # def GetAccountInfo(self) -> dict():
-  #   quota = self.account.get_quota()
-  #   space = self.account.get_storage_space(giga=True)
-  #   return {"quota": quota, "space": space}
