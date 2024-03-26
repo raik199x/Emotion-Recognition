@@ -14,6 +14,10 @@ class LearningStatisticsTable(QTableView):
     self.model.setColumnCount(len(self.column_names))
     self.model.setHorizontalHeaderLabels(self.column_names)
 
+    self.reloadTable(parser)
+    self.setShowGrid(True)
+
+  def reloadTable(self, parser: DatasetParser):
     self.amount_of_emotions = len(parser.emotion_list)
     self.model.setRowCount(self.amount_of_emotions)
     for num, emotion in enumerate(parser.emotion_list):
@@ -22,8 +26,6 @@ class LearningStatisticsTable(QTableView):
       content = str(len(parser.testing_set_dict[emotion])) if parser.isParserLoaded else "0"
       self.model.setItem(num, 2, QStandardItem(content))
       self.model.setItem(num, 3, QStandardItem("no iterations"))
-
-    self.setShowGrid(True)
 
   def set_data(self, guessed_right: list[int, ...], average_values: list[float, ...]):
     for num in range(0, self.amount_of_emotions):

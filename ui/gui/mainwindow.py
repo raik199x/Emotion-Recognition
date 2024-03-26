@@ -5,6 +5,10 @@ from ui.gui.tabs.camera_tab import CameraTab
 from ui.gui.tabs.storage_tab import StorageTab
 from DeepLearning.model import EmotionClassificationModel
 from DeepLearning.settings import pytorch_device
+from ImageProcessing.face_detection import FaceDetector
+from shared import pretrained_face_detector
+from DeepLearning.dataset_parser import DatasetParser
+from shared import dataset_folder_path
 
 
 class MainWindow(QMainWindow):
@@ -23,9 +27,12 @@ class MainWindow(QMainWindow):
     self.emotion_classification_model = EmotionClassificationModel()
     self.emotion_classification_model.to(pytorch_device)
 
-    # shared variables between windows
+    # flags
     self.is_model_loaded = False  # Shows if model file was selected
     self.is_model_learning = False  # Forbids changing model settings
+
+    self.FaceDetector = FaceDetector(pretrained_face_detector, 0)  # dlib face detector
+    self.parser = self.reloadParser()  # dataset parser
 
     # Tabs
     self.list_of_tabs = [
@@ -35,7 +42,7 @@ class MainWindow(QMainWindow):
       CameraTab(self, "Camera"),
     ]
 
-    for index in range(0, len(self.list_of_tabs)):
+    for index, _ in enumerate(self.list_of_tabs):
       if self.list_of_tabs[index].tab_name == "Camera":
         self.camera_tab_index = index
         break
@@ -49,6 +56,9 @@ class MainWindow(QMainWindow):
         self.list_of_tabs[self.camera_tab_index].capture.release()
 
     self.list_of_tabs[index].UserSelectedTab()
+
+  def reloadParser(self) -> DatasetParser:
+    return DatasetParser(dataset_folder_path)
 
 
 def ShowWindow():

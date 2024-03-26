@@ -4,9 +4,6 @@ from ui.gui.tabs.abstract_tab import AbstractTabWidget
 from ui.gui.workers.learning_worker import LearningWorker
 from ui.gui.custom_widgets.learning_statistics_table import LearningStatisticsTable
 from ui.gui.custom_widgets.dark_style_button import DarkStyleButton
-from DeepLearning.dataset_parser import DatasetParser
-from shared import dataset_folder_path
-
 import pyqtgraph as pg
 
 
@@ -39,10 +36,6 @@ class LearningTab(AbstractTabWidget):
     self.main_vertical_layout.addWidget(self.label_model_train_status)
     self.main_vertical_layout.addLayout(buttons_start_stop_layout)
 
-    # Dataset settings
-    self.parser = DatasetParser(dataset_folder_path)
-    #! Need to add a lot of checks while folder might be deleted
-
     layout_statistics = QHBoxLayout()
     # Left side of layout_statistics
     basic_stats_layout = QFormLayout()
@@ -61,7 +54,7 @@ class LearningTab(AbstractTabWidget):
     self.main_vertical_layout.addLayout(layout_statistics)
 
     # Statistics table
-    self.table_statistics = LearningStatisticsTable(self.parser)
+    self.table_statistics = LearningStatisticsTable(self.ParentClass.parser)
     self.table_statistics.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
     self.table_statistics.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
     self.table_statistics.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -84,13 +77,14 @@ class LearningTab(AbstractTabWidget):
     self.button_start_model_train.setEnabled(False)
     self.button_stop_model_train.setEnabled(True)
     self.ParentClass.is_model_learning = True
+    self.table_statistics.reloadTable(self.ParentClass.parser)
 
     # Resetting stats
     self.current_epoch = 0
     self.current_emotion = "None"
 
     # Setting up worker
-    worker = LearningWorker(self.ParentClass, self.update_after_num_epochs, self.parser)
+    worker = LearningWorker(self.ParentClass, self.update_after_num_epochs, self.ParentClass.parser)
     worker.signals.redo_plots_signal.connect(self.UpdatePlots)
     worker.signals.update_epoch_stats_signal.connect(self.UpdateEpochStat)
     worker.signals.update_emotion_classification_result_signal.connect(self.UpdateClassificationResults)
@@ -108,13 +102,18 @@ class LearningTab(AbstractTabWidget):
   def UserSelectedTab(self) -> None:
     if self.ParentClass.is_model_learning:
       return
-    elif self.ParentClass.is_model_loaded:
-      self.label_model_train_status.setText("Ready for training")
-      self.button_start_model_train.setEnabled(True)
-    else:
-      self.label_model_train_status.setText("Model is not loaded. Check settings tab.")
-      self.button_start_model_train.setEnabled(False)
-      self.button_stop_model_train.setEnabled(False)
+    
+    error_message = "Model is not loaded. Check settings tab."
+    if self.ParentClass.is_model_loaded:
+      error_message = "Dataset is not loaded. Check settings tab."
+      if self.ParentClass.parser.isParserLoaded:
+        self.label_model_train_status.setText("Ready for training")
+        self.button_start_model_train.setEnabled(True)
+        return
+
+    self.label_model_train_status.setText(error_message)
+    self.button_start_model_train.setEnabled(False)
+    self.button_stop_model_train.setEnabled(False)
 
   @Slot()
   def UpdatePlots(self, loss_results: list[float, ...], accuracy_results: list[float, ...]) -> None:

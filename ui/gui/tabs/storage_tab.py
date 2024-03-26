@@ -2,8 +2,8 @@ from ui.gui.tabs.abstract_tab import AbstractTabWidget
 from ui.gui.custom_widgets.abstract_storage_cloud import AbstractStorageWidget
 from ui.gui.custom_widgets.dark_style_button import DarkStyleButton
 from ui.gui.custom_widgets.add_storage_dialog import AddStorageDialog
-from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QScrollArea, QWidget, QSpacerItem, QSizePolicy
-from PySide6.QtCore import Qt, Slot
+from PySide6.QtWidgets import QVBoxLayout, QHBoxLayout, QScrollArea, QWidget, QSpacerItem, QSizePolicy
+from PySide6.QtCore import Slot
 from shared import assets_folder_path
 from CloudStorages.cloud_storage_interface import CloudStorageInterface
 from config_parser import ProjectConfig
@@ -30,18 +30,12 @@ class StorageTab(AbstractTabWidget):
 
     upper_layout = QHBoxLayout()  # start of upper_layout
 
-    self.status_label = QLabel()
-    self.status_label.setText("Nothing to do now")
-    self.status_label.setAlignment(Qt.AlignCenter)
-    self.status_label.setStyleSheet("font-size: 16px; font-weight: bold")
-
     self.button_add_storage = DarkStyleButton("Add storage")
     self.button_add_storage.clicked.connect(self.addStoragePressed)
 
-    self.button_refresh_storage = DarkStyleButton("Refresh storage")
+    self.button_refresh_storage = DarkStyleButton("Refresh storages")
     self.button_refresh_storage.clicked.connect(self.refreshStorages)
 
-    upper_layout.addWidget(self.status_label)
     upper_layout.addWidget(self.button_add_storage)
     upper_layout.addWidget(self.button_refresh_storage)
     self.content_layout.addLayout(upper_layout)  # end of upper_layout
