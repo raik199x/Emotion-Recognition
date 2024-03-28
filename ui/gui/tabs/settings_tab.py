@@ -126,7 +126,7 @@ class SettingsTab(AbstractTabWidget):
       self.button_unload_parser.setEnabled(True)
     else:
       self.label_parser_status.setText("Parser is unloaded")
-      self.label_parser_status.setStyleSheet("color: red")
+      self.label_parser_status.setStyleSheet("color: yellow")
       self.button_load_parser.setEnabled(True)
       self.button_unload_parser.setEnabled(False)
 
@@ -142,8 +142,11 @@ class SettingsTab(AbstractTabWidget):
     self.SetLoadParserStatus()
 
   def deleteLocalDataFolderPressed(self) -> None:
+    if not os.path.exists(data_folder_path):
+      QMessageBox.info(self, "Fail", "Folder is not exist")
+      return
     if self.ParentClass.is_model_learning:
-      QMessageBox(self, "Fail", "Cannot delete local folder while model is learning")
+      QMessageBox.warning(self, "Fail", "Cannot delete local folder while model is learning")
       return
     result = QMessageBox.question(
       self,
